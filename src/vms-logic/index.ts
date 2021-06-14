@@ -18,11 +18,11 @@ export type Cell = {
 }
 
 export type MapSize = { width: number; height: number }
+export type Matrix = Cell[]
 export type VMSMap = MapSize & {
-  matrix: Cell[]
+  remainingUnOpen: number
+  matrix: Matrix
 }
-
-const createEmptyArray = (len: number) => Array.from(Array(len))
 
 const createPlainCell = (id: number): Cell => ({
   id,
@@ -35,7 +35,7 @@ const createPlainCell = (id: number): Cell => ({
 const updateCell = (map: VMSMap, pos: number, newCell: Cell): VMSMap => ({
   ...map,
   matrix: map.matrix.map((cell, idx) => {
-    return idx === pos ? newCell : cell
+    return idx === pos ? { ...cell, ...newCell } : cell
   }),
 })
 
@@ -67,22 +67,64 @@ export function diffusion(
   }
 }
 
+function countRemainingUnOpen(matrix: Matrix) {
+  return matrix.filter((cell) => !cell.isBomb).filter((cell) => !cell.isOpen)
+    .length
+}
+function countIsOpenBomb(matrix: Matrix) {
+  return matrix.filter((cell) => cell.isBomb).filter((cell) => cell.isOpen)
+    .length
+}
+
+type OpenResultMap<S extends string> = { status: S; map: VMSMap }
+type OpenResult =
+  | OpenResultMap<'OK'>
+  | OpenResultMap<'BOMB'>
+  | OpenResultMap<'CLEAR'>
+  | { status: 'GAME_OVER' }
+
 export function openCell(
   openPos: number,
   { width, matrix, ...resetMap }: VMSMap
-) {
+): OpenResult {
   matrix = [...matrix]
+
+  const hasIsOpenBomb = countIsOpenBomb(matrix)
+  if (hasIsOpenBomb) {
+    return { status: 'GAME_OVER' }
+  }
+
   const { isBomb } = matrix[openPos]
   if (isBomb) {
-    throw Error('isBomb')
+    matrix[openPos] = {
+      ...matrix[openPos],
+      isOpen: true,
+    }
+
+    return {
+      status: 'BOMB',
+      map: {
+        ...resetMap,
+        width,
+        matrix,
+        remainingUnOpen: countRemainingUnOpen(matrix),
+      },
+    }
   }
 
   diffusion(openPos, width, matrix)
 
+  // 判断是否胜利
+  const remainingUnOpen = countRemainingUnOpen(matrix)
+
   return {
-    ...resetMap,
-    width,
-    matrix,
+    status: remainingUnOpen ? 'OK' : 'CLEAR',
+    map: {
+      ...resetMap,
+      width,
+      matrix,
+      remainingUnOpen,
+    },
   }
 }
 
@@ -119,6 +161,10 @@ function setBomb(bombNumber: number, map: VMSMap): VMSMap {
  * 所以这地方需要判断
  */
 function getCanCheckPos(pos: number, width: number): number[] {
+  if (pos < 0) {
+    return []
+  }
+
   const x = pos % width
 
   const canCheckPos: number[] = []
@@ -163,35 +209,44 @@ function setNeighborNumber(map: VMSMap): VMSMap {
   }
 }
 
-export function GenerateMap({
+const createEmptyArray = (len: number) => Array.from(Array(len))
+function createPlainMatrix(width: number, height: number) {
+  return createEmptyArray(width * height).map((_, id) => {
+    return createPlainCell(id)
+  })
+}
+
+export function createMap({
   width,
   height,
   bombNumber,
 }: MapSize & { bombNumber: number }): VMSMap {
-  let map = {
+  const bombMap = setBomb(bombNumber, {
     width,
     height,
-    matrix: createEmptyArray(width * height).map((_, id) => {
-      return createPlainCell(id)
-    }),
+    remainingUnOpen: 0,
+    matrix: createPlainMatrix(width, height),
+  })
+  const newMap = setNeighborNumber(bombMap)
+
+  return {
+    ...newMap,
+    remainingUnOpen: countRemainingUnOpen(newMap.matrix),
   }
-
-  map = setNeighborNumber(setBomb(bombNumber, map))
-
-  return map
 }
 
-export function CreateVMS({
+export type CreateVMSProp = MapSize & { bombNumber: number }
+export type VMS = CreateVMSProp & { map: VMSMap }
+export default function CreateVMS({
   width,
   height,
   bombNumber,
-}: MapSize & { bombNumber: number }) {
+}: CreateVMSProp): VMS {
   return {
     width,
     height,
     bombNumber,
 
-    // BOMB: GenerateBombMap({ width, height, bombNumber }),
-    map: GenerateMap({ width, height, bombNumber }),
+    map: createMap({ width, height, bombNumber }),
   } as const
 }
