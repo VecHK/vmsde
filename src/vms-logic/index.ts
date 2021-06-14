@@ -146,15 +146,15 @@ function setBomb(bombNumber: number, map: VMSMap): VMSMap {
   matrix = [...matrix]
 
   if (bombNumber <= 0) {
-    throw Error('random: bombNumber 不能小于0')
+    throw Error('setBomb: bombNumber 不能小于0')
   } else if (bombNumber > matrix.length - 1) {
-    throw Error('random: bombNumber 不能超过 VMSMap 的格子数量 - 1')
+    throw Error('setBomb: bombNumber 不能超过 VMSMap 的格子数量 - 1')
   }
 
   const bombPositionList = new Set<number>() // 利用 Set 去重
 
   while (bombPositionList.size < bombNumber) {
-    const pos = Math.floor(Math.random() * (matrix.length - 1))
+    const pos = Math.floor(Math.random() * matrix.length)
     bombPositionList.add(pos)
   }
 
