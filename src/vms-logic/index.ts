@@ -71,6 +71,9 @@ function countRemainingUnOpen(matrix: Matrix) {
   return matrix.filter((cell) => !cell.isBomb).filter((cell) => !cell.isOpen)
     .length
 }
+function countBomb(matrix: Matrix) {
+  return matrix.filter((cell) => cell.isBomb).length
+}
 function countIsOpenBomb(matrix: Matrix) {
   return matrix.filter((cell) => cell.isBomb).filter((cell) => cell.isOpen)
     .length
@@ -83,11 +86,21 @@ type OpenResult =
   | OpenResultMap<'CLEAR'>
   | { status: 'GAME_OVER' }
 
-export function openCell(
-  openPos: number,
-  { width, matrix, ...resetMap }: VMSMap
-): OpenResult {
-  matrix = [...matrix]
+export function openCell(openPos: number, map: VMSMap): OpenResult {
+  const { width } = map
+  const matrix = [...map.matrix]
+
+  const isFirst = matrix.filter((cell) => !cell.isOpen).length === matrix.length
+  if (isFirst) {
+    // 首次点击不会踩雷的机能
+    if (matrix[openPos].isBomb) {
+      const newMap: VMSMap = createMap({
+        ...map,
+        bombNumber: countBomb(matrix),
+      })
+      return openCell(openPos, newMap)
+    }
+  }
 
   const hasIsOpenBomb = countIsOpenBomb(matrix)
   if (hasIsOpenBomb) {
@@ -104,7 +117,7 @@ export function openCell(
     return {
       status: 'BOMB',
       map: {
-        ...resetMap,
+        ...map,
         width,
         matrix,
         remainingUnOpen: countRemainingUnOpen(matrix),
@@ -120,7 +133,7 @@ export function openCell(
   return {
     status: remainingUnOpen ? 'OK' : 'CLEAR',
     map: {
-      ...resetMap,
+      ...map,
       width,
       matrix,
       remainingUnOpen,
