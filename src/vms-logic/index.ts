@@ -6,9 +6,9 @@ export type Cell = {
   isBomb: boolean
 
   // 'NONE': 无
-  // 'FLAG': 设旗
-  // 'BOMB': 设雷
-  icon: 'NONE' | 'FLAG' | 'BOMB'
+  // 'FLAG': 旗子， 点击无效
+  // 'DOUBT': 疑问
+  mark: 'NONE' | 'FLAG' | 'DOUBT'
 
   // 邻近的雷数目 0~8
   neighborNumber: NeighborNumber
@@ -27,17 +27,32 @@ export type VMSMap = MapSize & {
 const createPlainCell = (id: number): Cell => ({
   id,
   isBomb: false,
-  icon: 'NONE',
+  mark: 'NONE',
   neighborNumber: 0,
   isOpen: false,
 })
 
-const updateCell = (map: VMSMap, pos: number, newCell: Cell): VMSMap => ({
+const updateCell = (
+  pos: number,
+  map: VMSMap,
+  updateValues: { [P in keyof Cell]?: Cell[P] }
+): VMSMap => ({
   ...map,
   matrix: map.matrix.map((cell, idx) => {
-    return idx === pos ? { ...cell, ...newCell } : cell
+    return idx === pos ? { ...cell, ...updateValues } : cell
   }),
 })
+
+export function setMark(setPos: number, map: VMSMap): VMSMap {
+  const { mark } = map.matrix[setPos]
+  if (mark === 'FLAG') {
+    return updateCell(setPos, map, { mark: 'DOUBT' })
+  } else if (mark === 'DOUBT') {
+    return updateCell(setPos, map, { mark: 'NONE' })
+  } else {
+    return updateCell(setPos, map, { mark: 'FLAG' })
+  }
+}
 
 export function diffusion(
   startPos: number,
@@ -55,7 +70,7 @@ export function diffusion(
     return []
   } else if (cell.isBomb) {
     return []
-  } else if (cell.icon !== 'NONE') {
+  } else if (cell.mark !== 'NONE') {
     return []
   } else if (cell.isOpen) {
     return []
@@ -67,11 +82,16 @@ export function diffusion(
   }
 }
 
+export function countMark(matrix: Matrix, findMark: Cell['mark']) {
+  return matrix
+    .filter(({ mark }) => mark === findMark)
+    .filter((cell) => !cell.isOpen).length
+}
 function countRemainingUnOpen(matrix: Matrix) {
   return matrix.filter((cell) => !cell.isBomb).filter((cell) => !cell.isOpen)
     .length
 }
-function countBomb(matrix: Matrix) {
+export function countBomb(matrix: Matrix) {
   return matrix.filter((cell) => cell.isBomb).length
 }
 function countIsOpenBomb(matrix: Matrix) {
@@ -84,11 +104,17 @@ type OpenResult =
   | OpenResultMap<'OK'>
   | OpenResultMap<'BOMB'>
   | OpenResultMap<'CLEAR'>
+  | { status: 'FLAG' }
   | { status: 'GAME_OVER' }
 
 export function openCell(openPos: number, map: VMSMap): OpenResult {
   const { width } = map
   const matrix = [...map.matrix]
+
+  const { mark } = matrix[openPos]
+  if (mark === 'FLAG') {
+    return { status: 'FLAG' }
+  }
 
   const isFirst = matrix.filter((cell) => !cell.isOpen).length === matrix.length
   if (isFirst) {
