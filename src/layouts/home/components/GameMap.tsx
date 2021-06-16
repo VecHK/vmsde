@@ -1,22 +1,15 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import './home.css'
-
-import CreateVMS, {
-  Cell,
+import { useCallback, useEffect, useState } from 'react'
+import {
   openCell,
   setMark,
-  countBomb,
-  countMark,
   openCellNeighbor,
   getNeighborPos,
   VMS,
 } from 'src/vms-logic'
 
-const createEmptyArray = (len: number) => Array.from(Array(len))
+import GameCell, { CellMouseStatus } from './GameCell'
 
-const WIDTH = 12
-const HEIGHT = 32
-const BOMB_NUM = Math.floor(WIDTH * HEIGHT * 0.15)
+const createEmptyArray = (len: number) => Array.from(Array(len))
 
 function detectingClickType(
   e: React.MouseEvent<HTMLDivElement, MouseEvent>
@@ -38,95 +31,7 @@ function detectingClickType(
   }
 }
 
-export default () => {
-  // const [vms, setVMS] = useState(CreateVMSWithCustomBombMap())
-  const [vms, setVMS] = useState(
-    CreateVMS({ width: WIDTH, height: HEIGHT, bombNumber: BOMB_NUM })
-  )
-
-  const { width, height, map } = vms
-  const { matrix } = map
-
-  return (
-    <article>
-      <GameMap vms={vms} setVMS={setVMS} />
-
-      <div>safe cell: {map.remainingUnOpen}</div>
-      <div>bomb cell: {countBomb(map.matrix)}</div>
-      <div>my flags: {countBomb(map.matrix) - countMark(matrix, 'FLAG')}</div>
-      <button
-        onClick={() => {
-          setVMS(
-            CreateVMS({ width: WIDTH, height: HEIGHT, bombNumber: BOMB_NUM })
-          )
-        }}
-      >
-        Replay
-      </button>
-      <button
-        onClick={() => {
-          const { matrix } = map
-
-          const flagMatrix = matrix
-            .map((cell) => Number(cell.mark === 'FLAG'))
-            .join('')
-          console.log('flagMatrix', flagMatrix)
-        }}
-      >
-        exportflagMatrix
-      </button>
-
-      <div className="row">
-        {([0, 1, 2, 3, 4, 5, 6, 7, 8] as Cell['neighborNumber'][]).map((n) => {
-          return (
-            <GameCell
-              key={n}
-              cell={{
-                id: 9,
-                isBomb: false,
-                mark: 'NONE',
-                neighborNumber: n,
-                isOpen: true,
-              }}
-            />
-          )
-        })}
-      </div>
-    </article>
-  )
-}
-
-function IsOpenInnerContent(cell: Cell) {
-  if (cell.isBomb) {
-    return <div className="inner-is-open is-bomb">💥</div>
-  }
-
-  return (
-    <div className={`inner-is-open n-${cell.neighborNumber}`}>
-      {cell.neighborNumber ? cell.neighborNumber : ''}
-    </div>
-  )
-}
-
-function UnOpenInnerContent(cell: Cell) {
-  if (cell.mark === 'FLAG') {
-    return (
-      <div className="inner-un-open mark-flag">
-        <div className="inner-icon">🚩</div>
-      </div>
-    )
-  } else if (cell.mark === 'DOUBT') {
-    return (
-      <div className="inner-un-open mark-doubt">
-        <div className="inner-icon">❓</div>
-      </div>
-    )
-  } else {
-    return <div className="inner-un-open"></div>
-  }
-}
-
-function GameMap({
+export default function GameMap({
   vms,
   setVMS,
 }: {
@@ -291,7 +196,7 @@ function GameMap({
               const currentCell = matrix[pos]
               // console.log(`matrix[${pos}]`, matrix[pos])
 
-              let mouseStatus: GameCellMouseStatus = 'default'
+              let mouseStatus: CellMouseStatus = 'default'
               if (mouseDownPos === pos && enterPos === pos) {
                 mouseStatus = 'press'
               } else if (enterPos === pos) {
@@ -327,52 +232,6 @@ function GameMap({
           </div>
         )
       })}
-    </div>
-  )
-}
-
-type GameCellMouseStatus = 'press' | 'hover' | 'default'
-function GameCell({
-  cell,
-  mouseStatus = 'default',
-  onMouseEnter,
-  onMouseLeave,
-  onMouseUp,
-  onMouseDown,
-}: {
-  cell: Cell
-  onMouseEnter?: React.HTMLAttributes<HTMLDivElement>['onMouseEnter']
-  onMouseLeave?: React.HTMLAttributes<HTMLDivElement>['onMouseLeave']
-  onMouseUp?: React.HTMLAttributes<HTMLDivElement>['onMouseUp']
-  onMouseDown?: React.HTMLAttributes<HTMLDivElement>['onMouseDown']
-
-  // actived?: boolean
-  mouseStatus?: GameCellMouseStatus
-}) {
-  const innerContent = useMemo(() => {
-    if (cell.isOpen) {
-      return <IsOpenInnerContent {...cell} />
-    } else {
-      return <UnOpenInnerContent {...cell} />
-    }
-  }, [cell])
-
-  const classNames = [
-    'cell',
-    `id-${cell.id}`,
-    cell.isOpen ? 'is-open' : 'un-open',
-    mouseStatus,
-  ]
-
-  return (
-    <div
-      className={classNames.join(' ')}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-      onMouseUp={onMouseUp}
-      onMouseDown={onMouseDown}
-    >
-      {innerContent}
     </div>
   )
 }
