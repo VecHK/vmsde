@@ -1,0 +1,27 @@
+@keyframes fadeInNext {
+  from {
+    transform: translateY(1.5em);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0px);
+    opacity: 1;
+  }
+}
+
+.Layout {
+  animation: fadeIn 618ms;
+
+  border: solid 1px transparent;
+  background-color: var(--background-color);
+
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
