@@ -11,16 +11,22 @@
   text-shadow: 1px 1px 1px #DDD;
 }
 
-/* 红、橙、黄、绿、青、蓝、紫 */
+body {
+  --cell-size: 32px;
+  --cell-font-size: calc(var(--cell-size) * 0.6);
+  --cell-icon-size: calc(var(--cell-size) * 0.6);
+  --cell-interval-length: 1px;
+}
+
 /* .inner-is-open.n-0 { } */
 .inner-is-open.n-1 { color: hsl(201, 47%, 35%) }
-.inner-is-open.n-2 { color: hsl(150, 81%, 40%) }
+.inner-is-open.n-2 { color: hsl(150, 70%, 45%) }
 .inner-is-open.n-3 { color: hsl(332, 87%, 45%) }
 .inner-is-open.n-4 { color: hsl(266, 55%, 58%) }
-.inner-is-open.n-5 { color: hsl(29, 71%, 50%) }
-.inner-is-open.n-6 { color: hsl(308, 80%, 60%) }
-.inner-is-open.n-7 { color: hsl(182, 60%, 45%) }
-.inner-is-open.n-8 { color: hsl(22, 99%, 28%) }
+.inner-is-open.n-5 { color: hsl(182, 60%, 45%) }
+.inner-is-open.n-6 { color: hsl(308, 80%, 50%) }
+.inner-is-open.n-7 { color: hsl(27, 56%, 55%) }
+.inner-is-open.n-8 { color: hsl(2, 13%, 38%) }
 .inner-is-open {
   background-color: hsla(201, 47%, 85%, 0.15);
   width: 100%;
@@ -30,14 +36,21 @@
   align-content: center;
   justify-content: center;
   box-shadow: 0 0 1px #777;
+
+  font-size: var(--cell-font-size);
 }
 
-.inner-un-open.mark-flag {
-  /* background-color: grey; */
+.cell.press .inner-un-open .inner-icon {
+  transform: translateY(1px);
 }
+.cell .inner-un-open .inner-icon {
+  font-size: var(--cell-icon-size);
+}
+
 .cell.press .inner-un-open {
   background: -webkit-linear-gradient(-89deg, hsl(201deg 19% 78%),#f0f0f0);
-  box-shadow: 0 0px 0px 1px hsl(204deg 10% 68%);
+  box-shadow: 0 0px 0px 1px hsl(204deg 10% 68%), inset 0 2px 0px -1px rgb(0 0 0 / 10%), inset 0 3px 5px rgb(0 0 0 / 15%);
+  /* transform: translateY(1px); */
 }
 .inner-un-open {
   width: 100%;
@@ -55,7 +68,7 @@
   ;
 
   background: -webkit-linear-gradient(89deg, hsl(201deg 19% 78%),#f0f0f0);
-  box-shadow: 0 0px 0px 1px hsl(204deg 10% 68%);
+  box-shadow: 0 0px 0px var(--cell-interval-length) hsl(204deg 10% 68%);
   border-radius: 2px;
 }
 
@@ -74,15 +87,17 @@
   position: relative;
   /* color: transparent; */
 
-  width: 32px;
-  height: 32px;
+  width: var(--cell-size);
+  min-width: var(--cell-size);
+  height: var(--cell-size);
+  min-height: var(--cell-size);
   
   display: flex;
   align-items: center;
   align-content: center;
   justify-content: center;
 
-  border: solid 1px hsl(201deg 47% 85% / 15%);
+  border: solid var(--cell-interval-length) hsl(201deg 47% 85% / 15%);
   box-sizing: border-box;
   /* border: solid 1px #DDD; */
   

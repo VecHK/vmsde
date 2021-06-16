@@ -110,9 +110,17 @@ function IsOpenInnerContent(cell: Cell) {
 
 function UnOpenInnerContent(cell: Cell) {
   if (cell.mark === 'FLAG') {
-    return <div className="inner-un-open mark-flag">🚩</div>
+    return (
+      <div className="inner-un-open mark-flag">
+        <div className="inner-icon">🚩</div>
+      </div>
+    )
   } else if (cell.mark === 'DOUBT') {
-    return <div className="inner-un-open mark-doubt">❓</div>
+    return (
+      <div className="inner-un-open mark-doubt">
+        <div className="inner-icon">❓</div>
+      </div>
+    )
   } else {
     return <div className="inner-un-open"></div>
   }
