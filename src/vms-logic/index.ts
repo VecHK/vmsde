@@ -1,5 +1,5 @@
 // 邻近的雷数目
-type NeighborNumber = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8
+export type NeighborNumber = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8
 
 export type Cell = {
   id: number
@@ -181,6 +181,9 @@ export function openCellNeighbor(
   const centerCell = map.matrix[centerPos]
 
   if (centerCell.neighborNumber === 0) {
+    return { status: 'NOT_ENOUGH' }
+  }
+  if (!centerCell.isOpen) {
     return { status: 'NOT_ENOUGH' }
   }
 
