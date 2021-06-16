@@ -1,4 +1,4 @@
-@keyframes fadeInNext {
+@keyframes fadeIn {
   from {
     transform: translateY(1.5em);
     opacity: 0;
