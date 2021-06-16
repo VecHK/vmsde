@@ -3,11 +3,12 @@ import './index.css'
 
 import CreateVMS, { Cell, countBomb, countMark } from 'src/vms-logic'
 
-import GameCell from './components/GameCell'
+import { Dashboard } from './components/Dashboard'
 import GameMap from './components/GameMap'
+import GameCell from './components/GameCell'
 
-const WIDTH = 12
-const HEIGHT = 32
+const WIDTH = 16
+const HEIGHT = 16
 const BOMB_NUM = Math.floor(WIDTH * HEIGHT * 0.15)
 
 export default () => {
@@ -20,11 +21,9 @@ export default () => {
 
   return (
     <article>
+      <Dashboard vms={vms} />
       <GameMap vms={vms} setVMS={setVMS} />
 
-      <div>safe cell: {map.remainingUnOpen}</div>
-      <div>bomb cell: {countBomb(map.matrix)}</div>
-      <div>my flags: {countBomb(map.matrix) - countMark(matrix, 'FLAG')}</div>
       <button
         onClick={() => {
           setVMS(
