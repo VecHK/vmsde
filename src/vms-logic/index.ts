@@ -87,7 +87,7 @@ export function countMark(matrix: Matrix, findMark: Cell['mark']) {
     .filter(({ mark }) => mark === findMark)
     .filter((cell) => !cell.isOpen).length
 }
-function countRemainingUnOpen(matrix: Matrix) {
+export function countRemainingUnOpen(matrix: Matrix) {
   return matrix.filter((cell) => !cell.isBomb).filter((cell) => !cell.isOpen)
     .length
 }
@@ -167,6 +167,62 @@ export function openCell(openPos: number, map: VMSMap): OpenResult {
   }
 }
 
+type OpenNeighborResult =
+  | OpenResultMap<'OK'>
+  | OpenResultMap<'BOMB'>
+  | OpenResultMap<'CLEAR'>
+  | { status: 'NOT_ENOUGH' }
+  | { status: 'FLAG' }
+  | { status: 'GAME_OVER' }
+export function openCellNeighbor(
+  centerPos: number,
+  map: VMSMap
+): OpenNeighborResult {
+  const centerCell = map.matrix[centerPos]
+
+  if (centerCell.neighborNumber === 0) {
+    return { status: 'NOT_ENOUGH' }
+  }
+
+  const neighborPosList = getNeighborPos(centerPos, map.width).filter((pos) => {
+    // 滤掉无法访问的 cell
+    return map.matrix[pos]
+  })
+
+  const neighborFlagsPosList = neighborPosList.filter((pos) => {
+    const currentCell = map.matrix[pos]
+    return !currentCell.isOpen && currentCell.mark === 'FLAG'
+  })
+
+  const neighborFlagsCount = neighborFlagsPosList.length
+
+  if (neighborFlagsCount >= centerCell.neighborNumber) {
+    for (const pos of neighborPosList) {
+      const oepnResult = openCell(pos, map)
+      switch (oepnResult.status) {
+        case 'FLAG':
+          break
+        case 'GAME_OVER':
+          return { status: 'GAME_OVER' }
+        case 'OK':
+          map = oepnResult.map
+          break
+        case 'BOMB':
+          map = oepnResult.map
+          return { status: 'BOMB', map }
+        case 'CLEAR':
+          map = oepnResult.map
+          return { status: 'CLEAR', map }
+      }
+    }
+
+    return { status: 'OK', map }
+  }
+
+  // 如果周边设定的旗的数量小于 neighborNumber 则不会进行操作
+  return { status: 'NOT_ENOUGH' }
+}
+
 function setBomb(bombNumber: number, map: VMSMap): VMSMap {
   let { matrix } = map
   matrix = [...matrix]
@@ -232,7 +288,7 @@ function getNeighborPos(pos: number, width: number) {
   ]
 }
 
-function setNeighborNumber(map: VMSMap): VMSMap {
+export function setNeighborNumber(map: VMSMap): VMSMap {
   const { matrix, width } = map
 
   return {
