@@ -8,6 +8,7 @@ import CreateVMS, {
   countBomb,
   countMark,
   openCellNeighbor,
+  getNeighborPos,
   VMS,
 } from 'src/vms-logic'
 
@@ -126,7 +127,6 @@ function GameMap({
 }) {
   const { width, height, map } = vms
   const { matrix } = map
-  const matrix2D = createEmptyArray(height).map(() => createEmptyArray(width))
 
   const handleOpenCell = useCallback(
     (pos: number) => {
@@ -212,7 +212,10 @@ function GameMap({
   )
 
   const [enterPos, setEnterPos] = useState(-1)
-  const [mouseDownPos, setMouseDownPos] = useState(-1)
+  const [mouseDownPos, setMouseDownPos] = useState<number>(-1)
+  const [mouseDownType, setMouseDownType] = useState<'NORMAL' | 'MIDDLE'>(
+    'NORMAL'
+  )
 
   const handleMouseEnter = useCallback(
     (pos: number, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -230,7 +233,16 @@ function GameMap({
 
   const handleMouseDown = useCallback(
     (pos: number, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-      setMouseDownPos(pos)
+      // setMouseDownPos(pos)
+
+      const clickType = detectingClickType(e)
+      if (clickType === 'MIDDLE') {
+        setMouseDownPos(pos)
+        setMouseDownType('MIDDLE')
+      } else {
+        setMouseDownPos(pos)
+        setMouseDownType('NORMAL')
+      }
     },
     []
   )
@@ -254,6 +266,8 @@ function GameMap({
     }
   }, [])
 
+  const matrix2D = createEmptyArray(height).map(() => createEmptyArray(width))
+
   return (
     <div
       onContextMenu={(e) => {
@@ -266,6 +280,7 @@ function GameMap({
           <div className="row" key={h}>
             {row.map((col, w) => {
               const pos = h * width + w
+              const currentCell = matrix[pos]
               // console.log(`matrix[${pos}]`, matrix[pos])
 
               let mouseStatus: GameCellMouseStatus = 'default'
@@ -275,10 +290,24 @@ function GameMap({
                 mouseStatus = 'hover'
               }
 
+              if (mouseDownType === 'MIDDLE' && currentCell.mark !== 'FLAG') {
+                // 滤掉无法访问、设旗的 cell
+                const neighborPos = getNeighborPos(pos, map.width).filter(
+                  (pos) => {
+                    return matrix[pos]
+                  }
+                )
+                neighborPos.forEach((n_pos) => {
+                  if (mouseDownPos === n_pos && enterPos === n_pos) {
+                    mouseStatus = 'press'
+                  }
+                })
+              }
+
               return (
                 <GameCell
                   key={pos}
-                  cell={matrix[pos]}
+                  cell={currentCell}
                   mouseStatus={mouseStatus}
                   onMouseEnter={(e) => handleMouseEnter(pos, e)}
                   onMouseLeave={(e) => handleMouseLeave(pos, e)}

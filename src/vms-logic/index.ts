@@ -276,7 +276,7 @@ function getCanCheckPos(pos: number, width: number): number[] {
   return canCheckPos
 }
 
-function getNeighborPos(pos: number, width: number) {
+export function getNeighborPos(pos: number, width: number) {
   return [
     ...getCanCheckPos(pos, width),
 
