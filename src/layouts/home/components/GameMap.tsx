@@ -223,11 +223,7 @@ export default function GameMap({
               return (
                 <GameCell
                   key={pos}
-                  loseBomb={
-                    status === 'LOSE' &&
-                    !currentCell.isOpen &&
-                    currentCell.isBomb
-                  }
+                  status={status}
                   cell={currentCell}
                   mouseStatus={mouseStatus}
                   onMouseEnter={(e) => handleMouseEnter(pos, e)}

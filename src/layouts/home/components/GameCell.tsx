@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Cell } from 'src/vms-logic'
+import { Cell, VMSStatus } from 'src/vms-logic'
 
 export type CellMouseStatus = 'press' | 'hover' | 'default'
 
@@ -15,8 +15,48 @@ function IsOpenInnerContent(cell: Cell) {
   )
 }
 
-function UnOpenInnerContent(cell: Cell) {
-  if (cell.mark === 'FLAG') {
+function UnOpenInnerContent({
+  status,
+  cell,
+}: {
+  status: VMSStatus
+  cell: Cell
+}) {
+  if (status === 'LOSE') {
+    if (cell.mark === 'FLAG' && cell.isBomb) {
+      return (
+        <div className="inner-un-open mark-flag">
+          <div className="inner-icon">🚩</div>
+        </div>
+      )
+    } else if (cell.mark === 'FLAG' && !cell.isBomb) {
+      return (
+        <div
+          className={`inner-un-open mark-flag miss-flag n-${cell.neighborNumber}`}
+        >
+          <div className="inner-icon">{cell.neighborNumber}</div>
+        </div>
+      )
+    } else if (cell.mark === 'DOUBT' && !cell.isBomb) {
+      return (
+        <div className="inner-un-open mark-doubt">
+          <div className="inner-icon">❓</div>
+        </div>
+      )
+    } else if (cell.isBomb) {
+      return (
+        <div className="inner-un-open lose-bomb">
+          <div className="inner-icon">💣</div>
+        </div>
+      )
+    }
+
+    return (
+      <div className="inner-un-open">
+        <div className="inner-icon"></div>
+      </div>
+    )
+  } else if (cell.mark === 'FLAG') {
     return (
       <div className="inner-un-open mark-flag">
         <div className="inner-icon">🚩</div>
@@ -35,7 +75,7 @@ function UnOpenInnerContent(cell: Cell) {
 
 export default function GameCell({
   cell,
-  loseBomb,
+  status = 'PLAYING',
   mouseStatus = 'default',
   onMouseEnter,
   onMouseLeave,
@@ -43,7 +83,8 @@ export default function GameCell({
   onMouseDown,
 }: {
   cell: Cell
-  loseBomb?: boolean
+  status?: VMSStatus
+  // loseBomb?: boolean
   mouseStatus?: CellMouseStatus
 
   onMouseEnter?: React.HTMLAttributes<HTMLDivElement>['onMouseEnter']
@@ -55,16 +96,15 @@ export default function GameCell({
     if (cell.isOpen) {
       return <IsOpenInnerContent {...cell} />
     } else {
-      return <UnOpenInnerContent {...cell} />
+      return <UnOpenInnerContent status={status} cell={cell} />
     }
-  }, [cell])
+  }, [cell, status])
 
   const classNames = [
     'cell',
     `id-${cell.id}`,
     cell.isOpen ? 'is-open' : 'un-open',
     mouseStatus,
-    loseBomb ? 'lose-bomb' : '',
   ]
 
   return (
