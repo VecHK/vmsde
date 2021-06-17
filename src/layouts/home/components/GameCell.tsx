@@ -35,6 +35,7 @@ function UnOpenInnerContent(cell: Cell) {
 
 export default function GameCell({
   cell,
+  loseBomb,
   mouseStatus = 'default',
   onMouseEnter,
   onMouseLeave,
@@ -42,13 +43,13 @@ export default function GameCell({
   onMouseDown,
 }: {
   cell: Cell
+  loseBomb?: boolean
+  mouseStatus?: CellMouseStatus
+
   onMouseEnter?: React.HTMLAttributes<HTMLDivElement>['onMouseEnter']
   onMouseLeave?: React.HTMLAttributes<HTMLDivElement>['onMouseLeave']
   onMouseUp?: React.HTMLAttributes<HTMLDivElement>['onMouseUp']
   onMouseDown?: React.HTMLAttributes<HTMLDivElement>['onMouseDown']
-
-  // actived?: boolean
-  mouseStatus?: CellMouseStatus
 }) {
   const innerContent = useMemo(() => {
     if (cell.isOpen) {
@@ -63,6 +64,7 @@ export default function GameCell({
     `id-${cell.id}`,
     cell.isOpen ? 'is-open' : 'un-open',
     mouseStatus,
+    loseBomb ? 'lose-bomb' : '',
   ]
 
   return (

@@ -5,6 +5,7 @@ import {
   openCellNeighbor,
   getNeighborPos,
   VMS,
+  VMSStatus,
 } from 'src/vms-logic'
 
 import GameCell, { CellMouseStatus } from './GameCell'
@@ -32,9 +33,11 @@ function detectingClickType(
 }
 
 export default function GameMap({
+  status,
   vms,
   setVMS,
 }: {
+  status: VMSStatus
   vms: VMS
   setVMS: React.Dispatch<React.SetStateAction<VMS>>
 }) {
@@ -220,6 +223,11 @@ export default function GameMap({
               return (
                 <GameCell
                   key={pos}
+                  loseBomb={
+                    status === 'LOSE' &&
+                    !currentCell.isOpen &&
+                    currentCell.isBomb
+                  }
                   cell={currentCell}
                   mouseStatus={mouseStatus}
                   onMouseEnter={(e) => handleMouseEnter(pos, e)}

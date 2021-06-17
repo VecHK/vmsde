@@ -22,7 +22,7 @@ export default () => {
     <article>
       <Dashboard vms={vms} />
 
-      <GameMap vms={vms} setVMS={setVMS} />
+      <GameMap status={status} vms={vms} setVMS={setVMS} />
 
       <GameStatus
         status={status}

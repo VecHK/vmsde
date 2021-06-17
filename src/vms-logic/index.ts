@@ -333,18 +333,38 @@ export function createMap({
   }
 }
 
+export type VMSStatus = 'WIN' | 'LOSE' | 'PLAYING'
+export function getVMSStatus(matrix: Matrix): VMSStatus {
+  for (const cell of matrix) {
+    if (cell.isBomb && cell.isOpen) {
+      return 'LOSE'
+    }
+  }
+
+  if (countRemainingUnOpen(matrix) === 0) {
+    return 'WIN'
+  } else {
+    return 'PLAYING'
+  }
+}
+
 export type CreateVMSProp = MapSize & { bombNumber: number }
-export type VMS = CreateVMSProp & { map: VMSMap }
+export type VMS = CreateVMSProp & {
+  map: VMSMap
+  status: VMSStatus
+}
 export default function CreateVMS({
   width,
   height,
   bombNumber,
 }: CreateVMSProp): VMS {
+  const map = createMap({ width, height, bombNumber })
   return {
     width,
     height,
     bombNumber,
+    status: getVMSStatus(map.matrix),
 
-    map: createMap({ width, height, bombNumber }),
+    map,
   } as const
 }
