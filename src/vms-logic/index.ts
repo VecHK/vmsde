@@ -119,7 +119,8 @@ export function openCell(openPos: number, map: VMSMap): OpenResult {
   const isFirst = matrix.filter((cell) => !cell.isOpen).length === matrix.length
   if (isFirst) {
     // 首次点击不会踩雷的机能
-    if (matrix[openPos].isBomb) {
+    // 首次点击必定触发扩散
+    if (matrix[openPos].isBomb || matrix[openPos].neighborNumber !== 0) {
       const newMap: VMSMap = createMap({
         ...map,
         bombNumber: countBomb(matrix),
