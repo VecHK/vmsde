@@ -22,13 +22,35 @@ function UnOpenInnerContent({
   status: VMSStatus
   cell: Cell
 }) {
+  const flagNode = useMemo(
+    () => (
+      <div className="inner-un-open mark-flag">
+        <div className="inner-icon">🚩</div>
+      </div>
+    ),
+    []
+  )
+  const doubtNode = useMemo(
+    () => (
+      <div className="inner-un-open mark-doubt">
+        <div className="inner-icon">❓</div>
+      </div>
+    ),
+    []
+  )
+  const loseBombNode = useMemo(
+    () => (
+      <div className="inner-un-open lose-bomb">
+        <div className="inner-icon">💣</div>
+      </div>
+    ),
+    []
+  )
+  const emptyNode = useMemo(() => <div className="inner-un-open"></div>, [])
+
   if (status === 'LOSE') {
     if (cell.mark === 'FLAG' && cell.isBomb) {
-      return (
-        <div className="inner-un-open mark-flag">
-          <div className="inner-icon">🚩</div>
-        </div>
-      )
+      return flagNode
     } else if (cell.mark === 'FLAG' && !cell.isBomb) {
       return (
         <div
@@ -38,38 +60,18 @@ function UnOpenInnerContent({
         </div>
       )
     } else if (cell.mark === 'DOUBT' && !cell.isBomb) {
-      return (
-        <div className="inner-un-open mark-doubt">
-          <div className="inner-icon">❓</div>
-        </div>
-      )
+      return doubtNode
     } else if (cell.isBomb) {
-      return (
-        <div className="inner-un-open lose-bomb">
-          <div className="inner-icon">💣</div>
-        </div>
-      )
+      return loseBombNode
     }
 
-    return (
-      <div className="inner-un-open">
-        <div className="inner-icon"></div>
-      </div>
-    )
+    return emptyNode
   } else if (cell.mark === 'FLAG') {
-    return (
-      <div className="inner-un-open mark-flag">
-        <div className="inner-icon">🚩</div>
-      </div>
-    )
+    return flagNode
   } else if (cell.mark === 'DOUBT') {
-    return (
-      <div className="inner-un-open mark-doubt">
-        <div className="inner-icon">❓</div>
-      </div>
-    )
+    return doubtNode
   } else {
-    return <div className="inner-un-open"></div>
+    return emptyNode
   }
 }
 
