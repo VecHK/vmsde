@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import Home from 'src/layouts/home'
+import Setting from 'src/layouts/setting'
 
 const NAV_ITEMS: Array<{
   title: string
@@ -13,6 +14,11 @@ const NAV_ITEMS: Array<{
     title: 'Home',
     url: null,
     Component: Home,
+  },
+  {
+    title: 'Setting',
+    url: null,
+    Component: Setting,
   },
   {
     hide: true,

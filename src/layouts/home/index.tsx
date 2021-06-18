@@ -8,6 +8,7 @@ import { Dashboard } from './components/Dashboard'
 import GameMap from './components/GameMap'
 import { GameStatus } from './components/GameStatus'
 import GameTimer from './components/GameTimer'
+import Cell from 'src/components/Cell'
 
 const WIDTH = 10
 const HEIGHT = 10
@@ -32,25 +33,41 @@ export default () => {
   )
 
   return (
-    <article>
-      <Dashboard vms={vms} />
+    <div className="home">
+      <div className="game-frame">
+        <Dashboard vms={vms} />
 
-      <GameMap status={status} vms={vms} setVMS={handleSetVMS} />
+        <GameMap status={status} vms={vms} setVMS={handleSetVMS} />
 
-      <GameTimer className="gamer-timer-area" vms={vms} startTime={startTime} />
+        <GameTimer
+          className="gamer-timer-area"
+          vms={vms}
+          startTime={startTime}
+        />
 
-      <GameStatus
-        status={status}
-        vms={vms}
-        setVMS={setVMS}
-        cfg={{ WIDTH, HEIGHT, BOMB_NUM }}
-        onClickReplay={() => {
-          setStartTime(Date.now())
-          setVMS(
-            CreateVMS({ width: WIDTH, height: HEIGHT, bombNumber: BOMB_NUM })
-          )
-        }}
-      />
-    </article>
+        <GameStatus
+          status={status}
+          vms={vms}
+          setVMS={setVMS}
+          cfg={{ WIDTH, HEIGHT, BOMB_NUM }}
+          onClickReplay={() => {
+            setStartTime(Date.now())
+            setVMS(
+              CreateVMS({ width: WIDTH, height: HEIGHT, bombNumber: BOMB_NUM })
+            )
+          }}
+        />
+      </div>
+      <div className="setting-enter">
+        <Cell
+          innerType="solid"
+          innerContent="≡"
+          cursor="pointer"
+          onClick={() => {
+            location.replace('#?t=Setting')
+          }}
+        />
+      </div>
+    </div>
   )
 }
