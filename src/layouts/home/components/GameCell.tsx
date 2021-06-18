@@ -1,5 +1,6 @@
-import { useMemo } from 'react'
+import { ReactNode, useMemo } from 'react'
 import { Cell, VMSStatus } from 'src/vms-logic'
+import CellFrame, { CellInnerType } from 'src/components/Cell'
 
 export type CellMouseStatus = 'press' | 'hover' | 'default'
 
@@ -8,71 +9,7 @@ function IsOpenInnerContent(cell: Cell) {
     return <div className="inner-is-open is-bomb">💥</div>
   }
 
-  return (
-    <div className={`inner-is-open n-${cell.neighborNumber}`}>
-      {cell.neighborNumber ? cell.neighborNumber : ''}
-    </div>
-  )
-}
-
-function UnOpenInnerContent({
-  status,
-  cell,
-}: {
-  status: VMSStatus
-  cell: Cell
-}) {
-  const flagNode = useMemo(
-    () => (
-      <div className="inner-un-open mark-flag">
-        <div className="inner-icon">🚩</div>
-      </div>
-    ),
-    []
-  )
-  const doubtNode = useMemo(
-    () => (
-      <div className="inner-un-open mark-doubt">
-        <div className="inner-icon">❓</div>
-      </div>
-    ),
-    []
-  )
-  const loseBombNode = useMemo(
-    () => (
-      <div className="inner-un-open lose-bomb">
-        <div className="inner-icon">💣</div>
-      </div>
-    ),
-    []
-  )
-  const emptyNode = useMemo(() => <div className="inner-un-open"></div>, [])
-
-  if (status === 'LOSE') {
-    if (cell.mark === 'FLAG' && cell.isBomb) {
-      return flagNode
-    } else if (cell.mark === 'FLAG' && !cell.isBomb) {
-      return (
-        <div
-          className={`inner-un-open mark-flag miss-flag n-${cell.neighborNumber}`}
-        >
-          <div className="inner-icon">{cell.neighborNumber}</div>
-        </div>
-      )
-    } else if (cell.mark === 'DOUBT' && !cell.isBomb) {
-      return doubtNode
-    } else if (cell.isBomb) {
-      return loseBombNode
-    }
-
-    return emptyNode
-  } else if (cell.mark === 'FLAG') {
-    return flagNode
-  } else if (cell.mark === 'DOUBT') {
-    return doubtNode
-  } else {
-    return emptyNode
-  }
+  return <>{cell.neighborNumber ? cell.neighborNumber : ''}</>
 }
 
 export default function GameCell({
@@ -86,7 +23,6 @@ export default function GameCell({
 }: {
   cell: Cell
   status?: VMSStatus
-  // loseBomb?: boolean
   mouseStatus?: CellMouseStatus
 
   onMouseEnter?: React.HTMLAttributes<HTMLDivElement>['onMouseEnter']
@@ -94,30 +30,66 @@ export default function GameCell({
   onMouseUp?: React.HTMLAttributes<HTMLDivElement>['onMouseUp']
   onMouseDown?: React.HTMLAttributes<HTMLDivElement>['onMouseDown']
 }) {
-  const innerContent = useMemo(() => {
-    if (cell.isOpen) {
-      return <IsOpenInnerContent {...cell} />
-    } else {
-      return <UnOpenInnerContent status={status} cell={cell} />
-    }
-  }, [cell, status])
+  const events = { onMouseEnter, onMouseLeave, onMouseUp, onMouseDown }
 
-  const classNames = [
-    'cell',
-    `id-${cell.id}`,
-    cell.isOpen ? 'is-open' : 'un-open',
-    mouseStatus,
-  ]
+  const loseBombNode = useMemo(
+    () => (
+      <div className="inner-un-open lose-bomb">
+        <div className="inner-icon">💣</div>
+      </div>
+    ),
+    []
+  )
+
+  let innerType: CellInnerType = 'hollow'
+  let innerContent: ReactNode
+
+  if (cell.isOpen) {
+    innerType = 'hollow'
+
+    if (cell.isBomb) {
+      innerContent = '💥'
+    } else {
+      innerContent = <IsOpenInnerContent {...cell} />
+    }
+  } else {
+    innerType = 'solid'
+    if (cell.mark === 'FLAG') {
+      innerContent = '🚩'
+    } else if (cell.mark === 'DOUBT') {
+      innerContent = '❓'
+    }
+
+    if (status === 'LOSE') {
+      if (cell.isBomb) {
+        innerContent = loseBombNode
+      }
+
+      if (cell.mark === 'FLAG') {
+        if (cell.isBomb) {
+          innerContent = '🚩'
+        } else {
+          innerType = 'hollow'
+          innerContent = (
+            <div
+              className={`inner-un-open mark-flag miss-flag n-${cell.neighborNumber}`}
+            >
+              <div className="inner-icon">{cell.neighborNumber}</div>
+            </div>
+          )
+        }
+      }
+    }
+  }
 
   return (
-    <div
-      className={classNames.join(' ')}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-      onMouseUp={onMouseUp}
-      onMouseDown={onMouseDown}
-    >
-      {innerContent}
-    </div>
+    <CellFrame
+      innerType={innerType}
+      innerContent={innerContent}
+      cursor={!cell.isOpen ? 'pointer' : undefined}
+      nColor={cell.neighborNumber}
+      mouseStatus={mouseStatus}
+      {...events}
+    />
   )
 }

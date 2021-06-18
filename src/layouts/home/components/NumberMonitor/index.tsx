@@ -1,5 +1,4 @@
-import { NeighborNumber } from 'src/vms-logic'
-import GameCell from '../GameCell'
+import Cell from 'src/components/Cell'
 
 const createEmptyArray = (len: number) => Array.from(Array(len))
 
@@ -17,18 +16,7 @@ export default function NumberMonitor({
   return (
     <div className="row">
       {digitList.map((n, id) => {
-        return (
-          <GameCell
-            key={id}
-            cell={{
-              id,
-              isBomb: false,
-              mark: 'NONE',
-              neighborNumber: (n as unknown) as NeighborNumber,
-              isOpen: true,
-            }}
-          />
-        )
+        return <Cell key={id} innerType={'hollow'} innerContent={n} />
       })}
     </div>
   )
