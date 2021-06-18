@@ -51,7 +51,7 @@ export default () => {
           setVMS={setVMS}
           cfg={{ WIDTH, HEIGHT, BOMB_NUM }}
           onClickReplay={() => {
-            setStartTime(Date.now())
+            setStartTime(null)
             setVMS(
               CreateVMS({ width: WIDTH, height: HEIGHT, bombNumber: BOMB_NUM })
             )
