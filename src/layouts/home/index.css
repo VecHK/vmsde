@@ -18,7 +18,7 @@ body {
   --cell-interval-length: 1px;
 }
 
-/* .inner-is-open.n-0 { } */
+.n-0 { color: hsl(185, 6%, 50%) }
 .n-1 { color: hsl(201, 47%, 35%) }
 .n-2 { color: hsl(150, 70%, 45%) }
 .n-3 { color: hsl(332, 87%, 45%) }
@@ -27,6 +27,8 @@ body {
 .n-6 { color: hsl(308, 80%, 50%) }
 .n-7 { color: hsl(27, 56%, 55%) }
 .n-8 { color: hsl(2, 13%, 38%) }
+.n-9 { color: hsl(197, 80%, 47%) }
+
 .inner-is-open {
   background-color: hsla(201, 47%, 85%, 0.15);
   width: 100%;
@@ -43,11 +45,6 @@ body {
 .cell .inner-un-open .inner-icon {
   font-size: var(--cell-icon-size);
 }
-
-/* .cell .inner-un-open::before {
-  content: '💣';
-  opacity: .382;
-} */
 
 .cell .inner-un-open.mark-flag.miss-flag {
   position: relative;
@@ -123,4 +120,8 @@ body {
   box-sizing: border-box;
   /* border: solid 1px #DDD; */
   
+}
+
+.gamer-timer-area {
+  margin-top: 24px;
 }

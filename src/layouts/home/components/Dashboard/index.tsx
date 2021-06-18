@@ -1,8 +1,9 @@
 import { ReactNode } from 'react'
-import { countBomb, countMark, VMS, NeighborNumber } from 'src/vms-logic'
-import GameCell from '../GameCell'
-
 import './index.css'
+
+import { countBomb, countMark, VMS } from 'src/vms-logic'
+
+import GameCell from '../GameCell'
 
 export type DashboardProps = {
   vms: VMS
@@ -12,7 +13,7 @@ export function Dashboard({ vms }: DashboardProps) {
   const { matrix } = map
 
   return (
-    <div className="dashboard">
+    <div className="game-dashboard">
       <DCol name={<>💣</>} value={`x${countBomb(map.matrix)}`} />
       <DCol
         name={

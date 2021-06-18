@@ -8,6 +8,8 @@ export type GameStatusProps = {
   setVMS: React.Dispatch<React.SetStateAction<VMS>>
   status: VMSStatus
 
+  onClickReplay: () => void
+
   cfg: {
     WIDTH: number
     HEIGHT: number
@@ -17,6 +19,7 @@ export type GameStatusProps = {
 export function GameStatus({
   status,
   setVMS,
+  onClickReplay,
   cfg: { WIDTH, HEIGHT, BOMB_NUM },
 }: GameStatusProps) {
   const [lock, setLock] = useState(false)
@@ -36,15 +39,13 @@ export function GameStatus({
             setWinCount(0)
           }
 
-          setVMS(
-            CreateVMS({ width: WIDTH, height: HEIGHT, bombNumber: BOMB_NUM })
-          )
+          onClickReplay()
         }}
       >
         <div className="rb-inner">再来一把</div>
       </button>
     )
-  }, [BOMB_NUM, HEIGHT, WIDTH, setVMS, status])
+  }, [onClickReplay, status])
 
   return (
     <div className="game-status">

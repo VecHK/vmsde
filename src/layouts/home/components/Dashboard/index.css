@@ -1,10 +1,14 @@
-.dashboard {
+.game-dashboard {
   display: flex;
   align-items: center;
   align-content: center;
   justify-content: center;
 
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+
+  font-family: Arial, 'Courier New', Courier, monospace;
+  font-weight: 900;
+  color: hsl(185, 6%, 50%);
 }
 
 .d-col:last-child {
@@ -33,5 +37,5 @@
   min-height: 32px;
   line-height: 32px;
 
-  font-family: Courier, monospace;
+  /* font-family: Courier, monospace; */
 }
