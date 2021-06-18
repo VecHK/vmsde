@@ -24,7 +24,7 @@ export type VMSMap = MapSize & {
   matrix: Matrix
 }
 
-const createPlainCell = (id: number): Cell => ({
+export const createPlainCell = (id: number): Cell => ({
   id,
   isBomb: false,
   mark: 'NONE',
@@ -232,7 +232,7 @@ function setBomb(bombNumber: number, map: VMSMap): VMSMap {
   matrix = [...matrix]
 
   if (bombNumber <= 0) {
-    throw Error('setBomb: bombNumber 不能小于0')
+    throw Error('setBomb: bombNumber 不能低于0')
   } else if (bombNumber > matrix.length - 1) {
     throw Error('setBomb: bombNumber 不能超过 VMSMap 的格子数量 - 1')
   }
@@ -349,11 +349,15 @@ export function getVMSStatus(matrix: Matrix): VMSStatus {
   }
 }
 
-export type CreateVMSProp = MapSize & { bombNumber: number }
-export type VMS = CreateVMSProp & {
+export type BombNumber = number
+export type CreateVMSProp = MapSize & { bombNumber: BombNumber }
+
+export type VMS = MapSize & {
+  bombNumber: BombNumber
   map: VMSMap
   status: VMSStatus
 }
+
 export default function CreateVMS({
   width,
   height,
@@ -368,4 +372,70 @@ export default function CreateVMS({
 
     map,
   } as const
+}
+
+export function CreateVMSByMData({
+  width,
+  height,
+  mData,
+}: MapSize & { mData: string }): VMS {
+  const map = mapData2Map(mData)
+  return {
+    width,
+    height,
+    bombNumber: countBomb(map.matrix),
+    status: getVMSStatus(map.matrix),
+
+    map,
+  } as const
+}
+
+export function mapData2Map(mapData: string): VMSMap {
+  const trimData = mapData.trim()
+  const rows = trimData.split('\n')
+  const width = rows[0].length
+  const height = rows.length
+
+  const TFM: string[] = []
+  rows.forEach((row) => {
+    row.split('').forEach((bit, idx) => {
+      if (idx > width) {
+        throw Error('不对齐')
+      }
+
+      TFM.push(bit)
+    })
+  })
+
+  const matrix: Matrix = TFM.map((bit) => {
+    return {
+      ...createPlainCell(0),
+      isBomb: bit === '1',
+    }
+  })
+
+  return {
+    width,
+    height,
+    remainingUnOpen: countRemainingUnOpen(matrix),
+    matrix,
+  }
+}
+
+export function map2MapData({ width, height, matrix }: VMSMap): string {
+  const mapDataArray: string[] = []
+  for (let h = 0; h < height; ++h) {
+    const row: string[] = []
+
+    for (let w = 0; w < width; ++w) {
+      const pos = h * width + w
+      const cell = matrix[pos]
+
+      row.push(cell.isBomb ? '1' : '0')
+    }
+
+    mapDataArray.push(row.join(''))
+  }
+
+  return mapDataArray.join('\n')
 }
