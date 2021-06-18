@@ -1,0 +1,41 @@
+.game-dashboard {
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+
+  margin-bottom: 24px;
+
+  font-family: Arial, 'Courier New', Courier, monospace;
+  font-weight: 900;
+  color: hsl(185, 6%, 50%);
+}
+
+.d-col:last-child {
+  margin-right: 0;
+}
+.d-col {
+  margin-right: 32px;
+
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+}
+
+.dc-name {
+  min-width: 32px;
+  min-height: 32px;
+  line-height: 32px;
+
+  text-align: center;
+
+  margin-right: 8px;
+}
+
+.dc-value {
+  min-height: 32px;
+  line-height: 32px;
+
+  /* font-family: Courier, monospace; */
+}

@@ -1,0 +1,45 @@
+.row {
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+}
+
+.inner-un-open.mark-flag.miss-flag {
+  position: relative;
+  background: linear-gradient(0deg, hsl(201deg, 19%, 98%),#f0f0f0);
+  font-family: Arial, 'Courier New', Courier, monospace;
+  font-weight: 900;
+  text-shadow: 1px 1px 1px #DDD;
+}
+.inner-un-open.mark-flag.miss-flag::after {
+  position: absolute;
+  content: '🚩';
+  opacity: 0.3;
+}
+
+.inner-un-open.lose-bomb {
+  background: linear-gradient(0deg, hsl(0deg, 19%, 78%),#f0f0f0) !important;
+}
+
+.gamer-timer-area {
+  margin-top: 24px;
+}
+
+.home {
+  width: 100vw;
+  height: 100vh;
+  
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+
+  position: relative;
+}
+.game-frame {}
+.setting-enter {
+  position: absolute;
+  left: 0;
+  top: 0;
+}

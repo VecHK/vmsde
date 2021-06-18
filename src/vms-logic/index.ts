@@ -1,5 +1,5 @@
 // 邻近的雷数目
-type NeighborNumber = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8
+export type NeighborNumber = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8
 
 export type Cell = {
   id: number
@@ -119,7 +119,8 @@ export function openCell(openPos: number, map: VMSMap): OpenResult {
   const isFirst = matrix.filter((cell) => !cell.isOpen).length === matrix.length
   if (isFirst) {
     // 首次点击不会踩雷的机能
-    if (matrix[openPos].isBomb) {
+    // 首次点击必定触发扩散
+    if (matrix[openPos].isBomb || matrix[openPos].neighborNumber !== 0) {
       const newMap: VMSMap = createMap({
         ...map,
         bombNumber: countBomb(matrix),
@@ -181,6 +182,9 @@ export function openCellNeighbor(
   const centerCell = map.matrix[centerPos]
 
   if (centerCell.neighborNumber === 0) {
+    return { status: 'NOT_ENOUGH' }
+  }
+  if (!centerCell.isOpen) {
     return { status: 'NOT_ENOUGH' }
   }
 
@@ -330,18 +334,38 @@ export function createMap({
   }
 }
 
+export type VMSStatus = 'WIN' | 'LOSE' | 'PLAYING'
+export function getVMSStatus(matrix: Matrix): VMSStatus {
+  for (const cell of matrix) {
+    if (cell.isBomb && cell.isOpen) {
+      return 'LOSE'
+    }
+  }
+
+  if (countRemainingUnOpen(matrix) === 0) {
+    return 'WIN'
+  } else {
+    return 'PLAYING'
+  }
+}
+
 export type CreateVMSProp = MapSize & { bombNumber: number }
-export type VMS = CreateVMSProp & { map: VMSMap }
+export type VMS = CreateVMSProp & {
+  map: VMSMap
+  status: VMSStatus
+}
 export default function CreateVMS({
   width,
   height,
   bombNumber,
 }: CreateVMSProp): VMS {
+  const map = createMap({ width, height, bombNumber })
   return {
     width,
     height,
     bombNumber,
+    status: getVMSStatus(map.matrix),
 
-    map: createMap({ width, height, bombNumber }),
+    map,
   } as const
 }
