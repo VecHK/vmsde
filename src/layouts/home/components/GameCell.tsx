@@ -74,7 +74,9 @@ export default function GameCell({
             <div
               className={`inner-un-open mark-flag miss-flag n-${cell.neighborNumber}`}
             >
-              <div className="inner-icon">{cell.neighborNumber}</div>
+              <div className="inner-icon">
+                {cell.neighborNumber ? cell.neighborNumber : ''}
+              </div>
             </div>
           )
         }
