@@ -9,14 +9,21 @@ import GameMap from './components/GameMap'
 import { GameStatus } from './components/GameStatus'
 import GameTimer from './components/GameTimer'
 import Cell from 'src/components/Cell'
+import { loadConfig } from 'src/config'
 
-const WIDTH = 10
-const HEIGHT = 10
-const BOMB_NUM = Math.floor(WIDTH * HEIGHT * 0.15)
+// const WIDTH = 10
+// const HEIGHT = 10
+// const BOMB_NUM = Math.floor(WIDTH * HEIGHT * 0.15)
 
 export default () => {
+  const cfg = loadConfig()
+
   const [vms, setVMS] = useState(
-    CreateVMS({ width: WIDTH, height: HEIGHT, bombNumber: BOMB_NUM })
+    CreateVMS({
+      width: cfg.width,
+      height: cfg.height,
+      bombNumber: cfg.bomb_number,
+    })
   )
   const [startTime, setStartTime] = useState<number | null>(null)
 
@@ -49,11 +56,19 @@ export default () => {
           status={status}
           vms={vms}
           setVMS={setVMS}
-          cfg={{ WIDTH, HEIGHT, BOMB_NUM }}
+          cfg={{
+            WIDTH: cfg.width,
+            HEIGHT: cfg.height,
+            BOMB_NUM: cfg.bomb_number,
+          }}
           onClickReplay={() => {
             setStartTime(null)
             setVMS(
-              CreateVMS({ width: WIDTH, height: HEIGHT, bombNumber: BOMB_NUM })
+              CreateVMS({
+                width: cfg.width,
+                height: cfg.height,
+                bombNumber: cfg.bomb_number,
+              })
             )
           }}
         />
