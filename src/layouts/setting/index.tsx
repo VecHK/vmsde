@@ -3,6 +3,8 @@ import { useForm } from 'react-hook-form'
 import Button from 'src/components/Button'
 
 import { ConfigForm, loadConfig, form2Config, saveConfig } from 'src/config'
+import CreateVMS, { CreateVMSByMData } from 'src/vms-logic'
+import GameMap from '../home/components/GameMap'
 
 import './index.css'
 
@@ -13,7 +15,6 @@ const MAX_HEIGHT = 99
 
 export default () => {
   const config = loadConfig()
-  console.log('config', config)
 
   const {
     register,
@@ -37,8 +38,6 @@ export default () => {
     setValue('bomb_number', 1)
   }
 
-  console.log(watch('diffculty'))
-
   const customDiffcultyNode = (
     <div className="custom-diffculty">
       <div className="field">
@@ -54,7 +53,11 @@ export default () => {
               max: MAX_WIDTH,
             })}
           />
-          {errors.width && <span>10～99</span>}
+          {errors.width && (
+            <span>
+              {MIN_WIDTH}～{MAX_WIDTH}
+            </span>
+          )}
         </div>
       </div>
 
@@ -71,7 +74,11 @@ export default () => {
               max: MAX_HEIGHT,
             })}
           />
-          {errors.height && <span>10～99</span>}
+          {errors.height && (
+            <span>
+              {MIN_HEIGHT}～{MAX_HEIGHT}
+            </span>
+          )}
         </div>
       </div>
 
@@ -102,8 +109,8 @@ export default () => {
         <p>Version: {`${process.env.REACT_APP_VERSION}`}</p>
       </article>
 
-      <h1>难度设定</h1>
       <form className="setting-form" onSubmit={handleSubmit(onSubmit)}>
+        <h1>难度设定</h1>
         <div className="diffculty-setting">
           <div className="diff-select">
             <label>
@@ -164,6 +171,43 @@ export default () => {
           <div className="diff-custom">
             {watch('diffculty') === 'CUSTOM' && customDiffcultyNode}
           </div>
+        </div>
+
+        <h1 className="other-setting-h1">其它的一些设定</h1>
+        <div className="field">
+          <label>
+            <div className="ds-title">
+              <input
+                className="c-ratio"
+                type="checkbox"
+                {...register('edge_bomb')}
+                defaultValue={1}
+              />
+              <span className="my-ratio"></span>
+              <span className="d-title">边缘不放置地雷</span>
+            </div>
+            <div
+              className="d-desc"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'flex-start',
+                flexDirection: 'column',
+              }}
+            >
+              <div>可以避免这种情况：</div>
+              <GameMap
+                status="WIN"
+                vms={CreateVMSByMData({
+                  width: 3,
+                  height: 3,
+                  mData: '__?\n__!\n___',
+                })}
+                setVMS={() => {
+                  //
+                }}
+              />
+            </div>
+          </label>
         </div>
 
         <Button style={{ margin: '50px 0', width: '150px' }} type="submit">

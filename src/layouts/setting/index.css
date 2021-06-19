@@ -32,6 +32,7 @@
 .diff-select label {
   display: block;
   margin-bottom: 16px;
+  cursor: pointer;
 }
 .diff-custom {
   width: 100px;
@@ -102,4 +103,8 @@
 
 .diff-custom {
   /* align-self: flex-end; */
+}
+
+h1.other-setting-h1 {
+  margin-top: 32px
 }

@@ -186,6 +186,7 @@ export default function GameMap({
 
   return (
     <div
+      className="game-map"
       onContextMenu={(e) => {
         e.stopPropagation()
         e.preventDefault()

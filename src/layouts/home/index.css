@@ -59,3 +59,8 @@
   left: 0;
   top: 0;
 }
+
+.game-map {
+  /* display: flex;
+  flex-direction: column; */
+}

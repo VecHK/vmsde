@@ -30,6 +30,7 @@ function createVMSByConfig() {
     width,
     height,
     bombNumber: bomb_number,
+    egleBomb: cfg.edge_bomb,
   })
 }
 

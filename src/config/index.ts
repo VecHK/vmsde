@@ -1,4 +1,4 @@
-export const CONFIG_VERSION = 3 as const
+export const CONFIG_VERSION = 4 as const
 const STORE_KEY = 'VecMineSweeper_DE'
 
 export type Diffculty = 'EASY' | 'HARD' | 'LUNATIC' | 'CUSTOM'
@@ -28,7 +28,7 @@ export function form2Config(fd: ConfigForm): Config {
     bomb_number: Number(fd.bomb_number),
     width: Number(fd.width),
     height: Number(fd.height),
-    edge_bomb: fd.edge_bomb,
+    edge_bomb: Boolean(fd.edge_bomb),
   }
 }
 
@@ -39,7 +39,7 @@ export function diff2WHB(diff: Exclude<Diffculty, 'CUSTOM'>): WHB {
     case 'HARD':
       return { width: 10, height: 10, bomb_number: 15 }
     case 'LUNATIC':
-      return { width: 10, height: 10, bomb_number: 25 }
+      return { width: 10, height: 15, bomb_number: Math.floor(10 * 15 * 0.25) }
   }
 }
 
@@ -51,7 +51,7 @@ export function createDefaultConfig(): Config {
     bomb_number: 10,
     width: 10,
     height: 10,
-    edge_bomb: true,
+    edge_bomb: false,
   }
 
   return Config
