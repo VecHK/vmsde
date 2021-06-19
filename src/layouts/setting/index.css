@@ -1,0 +1,110 @@
+.setting {
+  padding: 2em 1em;
+}
+
+.setting h1 {
+  font-size: 2em;
+  margin: 0;
+  margin-bottom: 32px;
+  line-height: 1em;
+}
+
+.about {
+  margin-bottom: 64px;
+}
+
+.setting-form {
+}
+
+.field {
+  margin-top: 10px;
+}
+
+.diffculty-setting {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-end;
+}
+.diff-select {
+  margin-right: 48px;
+  width: 220px;
+}
+.diff-select label {
+  display: block;
+  margin-bottom: 16px;
+  cursor: pointer;
+}
+.diff-custom {
+  width: 100px;
+}
+.c-input {
+  background-color: hsla(201, 47%, 85%, 0.15);
+
+  box-shadow: 0 0 1px #777;
+  border: 0;
+  box-sizing: border-box;
+
+  font-family: Arial, 'Courier New', Courier, monospace;
+  font-weight: 900;
+  text-shadow: 1px 1px 1px #DDD;
+
+  color: hsl(185, 6%, 50%);
+
+  width: 100%;
+  box-sizing: border-box;
+
+  font-size: 20px;
+  line-height: 32px;
+  padding: 0 .5em;
+  letter-spacing: .1em;
+}
+
+.ds-title {
+  display: flex;
+  align-items: center;
+  align-content: center;
+}
+.d-title {
+  font-size: 24px;
+  font-weight: bolder;
+}
+.d-desc {
+  box-sizing: border-box;
+  padding-left: calc(14px + 8px);
+  margin-top: 4px;
+  color: #AAA;
+}
+.c-ratio {
+  appearance: none;
+  margin: 0;
+}
+.c-ratio + .my-ratio {
+  width: 14px;
+  height: 14px;
+  background-color: white;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1), 0 0 1px rgba(0, 0, 0, 0.3), 0 0 0 3px #EEE;
+  border-radius: 100%;
+  display: block;
+
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  margin-right: 8px;
+}
+.c-ratio:checked + .my-ratio::before {
+  content: " ";
+  width: 6px;
+  height: 6px;
+  border-radius: 100%;
+  background-color: #888;
+  /* background-color: red; */
+}
+
+.diff-custom {
+  /* align-self: flex-end; */
+}
+
+h1.other-setting-h1 {
+  margin-top: 32px
+}

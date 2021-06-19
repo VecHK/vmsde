@@ -1,35 +1,22 @@
-import React, { ReactNode, useMemo, useState } from 'react'
-import CreateVMS, { VMS, VMSStatus } from 'src/vms-logic'
+import { ReactNode, useMemo, useState } from 'react'
+import Button from 'src/components/Button'
+import { VMS, VMSStatus } from 'src/vms-logic'
 import GameCell from '../GameCell'
 import './index.css'
 
 export type GameStatusProps = {
   vms: VMS
-  setVMS: React.Dispatch<React.SetStateAction<VMS>>
   status: VMSStatus
 
   onClickReplay: () => void
-
-  cfg: {
-    WIDTH: number
-    HEIGHT: number
-    BOMB_NUM: number
-  }
 }
-export function GameStatus({
-  status,
-  setVMS,
-  onClickReplay,
-  cfg: { WIDTH, HEIGHT, BOMB_NUM },
-}: GameStatusProps) {
-  const [lock, setLock] = useState(false)
+export function GameStatus({ status, onClickReplay }: GameStatusProps) {
   const [winCount, setWinCount] = useState(0)
   const [loseCount, setLoseCount] = useState(0)
 
   const replayButton = useMemo(() => {
     return (
-      <button
-        className="replay-button"
+      <Button
         onClick={() => {
           if (status === 'WIN') {
             setLoseCount(0)
@@ -42,8 +29,8 @@ export function GameStatus({
           onClickReplay()
         }}
       >
-        <div className="rb-inner">再来一把</div>
-      </button>
+        再来一把
+      </Button>
     )
   }, [onClickReplay, status])
 

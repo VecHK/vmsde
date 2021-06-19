@@ -20,11 +20,12 @@ export type Cell = {
 export type MapSize = { width: number; height: number }
 export type Matrix = Cell[]
 export type VMSMap = MapSize & {
+  egleBomb: boolean
   remainingUnOpen: number
   matrix: Matrix
 }
 
-const createPlainCell = (id: number): Cell => ({
+export const createPlainCell = (id: number): Cell => ({
   id,
   isBomb: false,
   mark: 'NONE',
@@ -227,12 +228,31 @@ export function openCellNeighbor(
   return { status: 'NOT_ENOUGH' }
 }
 
+export function isEglePos(pos: number, width: number, height: number): boolean {
+  if (pos % width === 0) {
+    return true
+  }
+  if (pos - width < 0) {
+    return true
+  }
+
+  if (pos >= width * height - width) {
+    return true
+  }
+
+  if (pos % width === width - 1) {
+    return true
+  }
+
+  return false
+}
+
 function setBomb(bombNumber: number, map: VMSMap): VMSMap {
-  let { matrix } = map
-  matrix = [...matrix]
+  const { egleBomb, width, height } = map
+  const matrix = [...map.matrix]
 
   if (bombNumber <= 0) {
-    throw Error('setBomb: bombNumber 不能小于0')
+    throw Error('setBomb: bombNumber 不能低于0')
   } else if (bombNumber > matrix.length - 1) {
     throw Error('setBomb: bombNumber 不能超过 VMSMap 的格子数量 - 1')
   }
@@ -241,7 +261,10 @@ function setBomb(bombNumber: number, map: VMSMap): VMSMap {
 
   while (bombPositionList.size < bombNumber) {
     const pos = Math.floor(Math.random() * matrix.length)
-    bombPositionList.add(pos)
+
+    const canAdd = !(egleBomb && isEglePos(pos, width, height))
+
+    canAdd && bombPositionList.add(pos)
   }
 
   bombPositionList.forEach((pos) => {
@@ -250,6 +273,7 @@ function setBomb(bombNumber: number, map: VMSMap): VMSMap {
 
   return {
     ...map,
+    egleBomb,
     matrix,
   }
 }
@@ -319,12 +343,14 @@ export function createMap({
   width,
   height,
   bombNumber,
-}: MapSize & { bombNumber: number }): VMSMap {
+  egleBomb,
+}: MapSize & { bombNumber: number; egleBomb: boolean }): VMSMap {
   const bombMap = setBomb(bombNumber, {
     width,
     height,
     remainingUnOpen: 0,
     matrix: createPlainMatrix(width, height),
+    egleBomb,
   })
   const newMap = setNeighborNumber(bombMap)
 
@@ -349,17 +375,25 @@ export function getVMSStatus(matrix: Matrix): VMSStatus {
   }
 }
 
-export type CreateVMSProp = MapSize & { bombNumber: number }
-export type VMS = CreateVMSProp & {
+export type BombNumber = number
+export type CreateVMSProp = MapSize & {
+  bombNumber: BombNumber
+  egleBomb?: boolean
+}
+
+export type VMS = MapSize & {
+  bombNumber: BombNumber
   map: VMSMap
   status: VMSStatus
 }
+
 export default function CreateVMS({
   width,
   height,
   bombNumber,
+  egleBomb = false,
 }: CreateVMSProp): VMS {
-  const map = createMap({ width, height, bombNumber })
+  const map = createMap({ width, height, bombNumber, egleBomb })
   return {
     width,
     height,
@@ -368,4 +402,174 @@ export default function CreateVMS({
 
     map,
   } as const
+}
+
+export function CreateVMSByMData({
+  width,
+  height,
+  mData,
+}: MapSize & { mData: string }): VMS {
+  const map = mData2Map(mData)
+  return {
+    width,
+    height,
+    bombNumber: countBomb(map.matrix),
+    status: getVMSStatus(map.matrix),
+
+    map,
+  } as const
+}
+
+type mDataBit = 'X' | 'x' | '?' | '!' | '#' | '_' | '-'
+
+export function mDataBit2Cell(b: mDataBit): Cell {
+  switch (b) {
+    case '-':
+      return {
+        id: 0,
+        isBomb: true,
+        isOpen: false,
+        mark: 'NONE',
+        neighborNumber: 0,
+      }
+
+    case '_':
+      return {
+        id: 0,
+        isBomb: false,
+        isOpen: true,
+        mark: 'NONE',
+        neighborNumber: 0,
+      }
+    case '#':
+      return {
+        id: 0,
+        isBomb: false,
+        isOpen: false,
+        mark: 'NONE',
+        neighborNumber: 0,
+      }
+
+    case 'X':
+      return {
+        id: 0,
+        isBomb: true,
+        isOpen: false,
+        mark: 'FLAG',
+        neighborNumber: 0,
+      }
+
+    case 'x':
+      return {
+        id: 0,
+        isBomb: false,
+        isOpen: false,
+        mark: 'FLAG',
+        neighborNumber: 0,
+      }
+
+    case '?':
+      return {
+        id: 0,
+        isBomb: false,
+        isOpen: false,
+        mark: 'DOUBT',
+        neighborNumber: 0,
+      }
+
+    case '!':
+      return {
+        id: 0,
+        isBomb: true,
+        isOpen: false,
+        mark: 'DOUBT',
+        neighborNumber: 0,
+      }
+  }
+}
+
+const Transformer: { [k in mDataBit]: (c: Cell) => k | null } = {
+  X: (c) => (!c.isOpen && c.isBomb && c.mark === 'FLAG' ? 'X' : null),
+  x: (c) => (!c.isOpen && !c.isBomb && c.mark === 'FLAG' ? 'x' : null),
+  '?': (c) => (!c.isOpen && !c.isBomb && c.mark === 'DOUBT' ? '?' : null),
+  '!': (c) => (!c.isOpen && c.isBomb && c.mark === 'DOUBT' ? '!' : null),
+  '-': (c) => (!c.isOpen && c.isBomb ? '-' : null),
+  '#': (c) => (!c.isOpen ? '#' : null),
+  _: (c) => (c.isOpen ? '_' : null),
+}
+
+export function cell2MDataBit(cell: Cell): mDataBit | null {
+  for (const m in Transformer) {
+    const b = Transformer[m](cell)
+    if (!b) {
+      return b
+    }
+  }
+
+  return null
+}
+
+export function validMDataBit(b: string): mDataBit | false {
+  if (Transformer[b]) {
+    return b as mDataBit
+  }
+  return false
+}
+
+export function mData2Map(mapData: string): VMSMap {
+  const trimData = mapData.trim()
+  const rows = trimData.split('\n')
+  const width = rows[0].length
+  const height = rows.length
+
+  const TFM: mDataBit[] = []
+  rows.forEach((row) => {
+    row.split('').forEach((bit, idx) => {
+      if (idx > width) {
+        throw Error('不对齐')
+      }
+
+      const b = validMDataBit(bit)
+      if (b) {
+        TFM.push(b)
+      } else {
+        throw Error('mData2Map: invalid mData bit')
+      }
+    })
+  })
+
+  const matrix: Matrix = TFM.map(mDataBit2Cell)
+  const newMap = {
+    width,
+    height,
+    egleBomb: false,
+    remainingUnOpen: countRemainingUnOpen(matrix),
+    matrix,
+  }
+
+  return setNeighborNumber(newMap)
+}
+
+export function map2mData({ width, height, matrix }: VMSMap): string {
+  const mapDataArray: string[] = []
+  for (let h = 0; h < height; ++h) {
+    const row: mDataBit[] = []
+
+    for (let w = 0; w < width; ++w) {
+      const pos = h * width + w
+      const cell = matrix[pos]
+
+      const b = cell2MDataBit(cell)
+
+      if (b) {
+        row.push(b)
+      } else {
+        throw Error('map2mData: invalid cell')
+      }
+    }
+
+    mapDataArray.push(row.join(''))
+  }
+
+  return mapDataArray.join('\n')
 }

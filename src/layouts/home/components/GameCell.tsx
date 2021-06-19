@@ -87,7 +87,7 @@ export default function GameCell({
       innerType={innerType}
       innerContent={innerContent}
       cursor={!cell.isOpen ? 'pointer' : undefined}
-      nColor={cell.neighborNumber}
+      nColor={cell.isOpen ? cell.neighborNumber : 0}
       mouseStatus={mouseStatus}
       {...events}
     />
