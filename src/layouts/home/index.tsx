@@ -9,22 +9,32 @@ import GameMap from './components/GameMap'
 import { GameStatus } from './components/GameStatus'
 import GameTimer from './components/GameTimer'
 import Cell from 'src/components/Cell'
-import { loadConfig } from 'src/config'
+import { diff2WHB, loadConfig } from 'src/config'
 
 // const WIDTH = 10
 // const HEIGHT = 10
 // const BOMB_NUM = Math.floor(WIDTH * HEIGHT * 0.15)
 
-export default () => {
+function createVMSByConfig() {
   const cfg = loadConfig()
+  let { width, height, bomb_number } = cfg
 
-  const [vms, setVMS] = useState(
-    CreateVMS({
-      width: cfg.width,
-      height: cfg.height,
-      bombNumber: cfg.bomb_number,
-    })
-  )
+  if (cfg.diffculty !== 'CUSTOM') {
+    const whb = diff2WHB(cfg.diffculty)
+    width = whb.width
+    height = whb.height
+    bomb_number = whb.bomb_number
+  }
+
+  return CreateVMS({
+    width,
+    height,
+    bombNumber: bomb_number,
+  })
+}
+
+export default () => {
+  const [vms, setVMS] = useState(createVMSByConfig())
   const [startTime, setStartTime] = useState<number | null>(null)
 
   const status = useMemo(() => getVMSStatus(vms.map.matrix), [vms.map.matrix])
@@ -57,13 +67,7 @@ export default () => {
           vms={vms}
           onClickReplay={() => {
             setStartTime(null)
-            setVMS(
-              CreateVMS({
-                width: cfg.width,
-                height: cfg.height,
-                bombNumber: cfg.bomb_number,
-              })
-            )
+            setVMS(createVMSByConfig())
           }}
         />
       </div>

@@ -3,23 +3,23 @@ const STORE_KEY = 'VecMineSweeper_DE'
 
 export type Diffculty = 'EASY' | 'HARD' | 'LUNATIC' | 'CUSTOM'
 
+export type WHB<T = number> = { width: T; height: T; bomb_number: T }
+
 export type Config = {
   readonly version: typeof CONFIG_VERSION
   diffculty: Diffculty
-  bomb_number: number
-  width: number
-  height: number
   edge_bomb: boolean
-}
+} & WHB
+
 export type ConfigForm = {
   readonly version: typeof CONFIG_VERSION
   diffculty: Diffculty
-  bomb_number: string | number
-  width: string | number
-  height: string | number
+  // bomb_number: string | number
+  // width: string | number
+  // height: string | number
 
   edge_bomb: boolean
-}
+} & WHB<string | number>
 
 export function form2Config(fd: ConfigForm): Config {
   return {
@@ -29,6 +29,17 @@ export function form2Config(fd: ConfigForm): Config {
     width: Number(fd.width),
     height: Number(fd.height),
     edge_bomb: fd.edge_bomb,
+  }
+}
+
+export function diff2WHB(diff: Exclude<Diffculty, 'CUSTOM'>): WHB {
+  switch (diff) {
+    case 'EASY':
+      return { width: 10, height: 10, bomb_number: 5 }
+    case 'HARD':
+      return { width: 10, height: 10, bomb_number: 15 }
+    case 'LUNATIC':
+      return { width: 10, height: 10, bomb_number: 25 }
   }
 }
 
