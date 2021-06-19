@@ -55,12 +55,6 @@ export default () => {
         <GameStatus
           status={status}
           vms={vms}
-          setVMS={setVMS}
-          cfg={{
-            WIDTH: cfg.width,
-            HEIGHT: cfg.height,
-            BOMB_NUM: cfg.bomb_number,
-          }}
           onClickReplay={() => {
             setStartTime(null)
             setVMS(
