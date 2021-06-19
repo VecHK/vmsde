@@ -15,7 +15,7 @@ html, body {
 
 body {
   --background-color: white;
-  --main-font-color: rgb(67, 81, 111);
+  --main-font-color: hsl(185, 6%, 50%);
   background-color: var(--background-color);
 }
 

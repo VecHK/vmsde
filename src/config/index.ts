@@ -1,8 +1,11 @@
-export const CONFIG_VERSION = 1 as const
+export const CONFIG_VERSION = 3 as const
 const STORE_KEY = 'VecMineSweeper_DE'
+
+export type Diffculty = 'EASY' | 'HARD' | 'LUNATIC' | 'CUSTOM'
 
 export type Config = {
   readonly version: typeof CONFIG_VERSION
+  diffculty: Diffculty
   bomb_number: number
   width: number
   height: number
@@ -10,6 +13,7 @@ export type Config = {
 }
 export type ConfigForm = {
   readonly version: typeof CONFIG_VERSION
+  diffculty: Diffculty
   bomb_number: string | number
   width: string | number
   height: string | number
@@ -20,6 +24,7 @@ export type ConfigForm = {
 export function form2Config(fd: ConfigForm): Config {
   return {
     ...fd,
+    diffculty: fd.diffculty,
     bomb_number: Number(fd.bomb_number),
     width: Number(fd.width),
     height: Number(fd.height),
@@ -31,6 +36,7 @@ export function createDefaultConfig(): Config {
   const Config: Config = {
     version: CONFIG_VERSION,
 
+    diffculty: 'EASY',
     bomb_number: 10,
     width: 10,
     height: 10,
