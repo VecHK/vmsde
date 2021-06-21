@@ -200,7 +200,7 @@ export default () => {
                 vms={CreateVMSByMData({
                   width: 3,
                   height: 3,
-                  mData: '__?\n__!\n___',
+                  mData: '__?\n__!\n__?',
                 })}
                 setVMS={() => {
                   //
