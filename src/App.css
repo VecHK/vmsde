@@ -32,14 +32,11 @@ a {
 }
 
 section {
-  /* position: relative; */
-  box-sizing: border-box;
-  /* width: 500px; */
-  /* padding: 64px 1.5em; */
-  /* padding-bottom: 100px; */
   box-sizing: border-box;
   max-height: 100%;
-  overflow-y: scroll;
+
+  overflow-y: auto;
+  overflow-x: hidden;
 
   color: var(--main-font-color);
   font-family: "Segoe UI", "Noto Sans CJK SC", "Source Han Sans", "Source Han Sans CN", "Microsoft JhengHei", DengXian, "微软雅黑", "黑体", sans-serif;
