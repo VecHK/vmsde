@@ -201,9 +201,9 @@ export default () => {
               <GameMap
                 status="WIN"
                 vms={CreateVMSByMData({
-                  width: 3,
-                  height: 3,
-                  mData: '__?\n__!\n__?',
+                  width: 5,
+                  height: 4,
+                  mData: '__!__\n__?__\n_XXX_\n_____',
                 })}
                 setVMS={() => {
                   //
