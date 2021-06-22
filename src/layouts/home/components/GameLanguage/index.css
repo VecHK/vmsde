@@ -1,0 +1,25 @@
+.language-select {
+  cursor: pointer;
+  user-select: none;
+}
+
+.lang-icon:last-child {
+  border-right: 0;
+}
+
+.lang-icon {
+  display: inline-flex;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  padding: 0 4px;
+  border-right: solid 1px grey;
+  width: 28px;
+  font-size: 16px;
+  height: 28px;
+}
+
+.lang-icon.current {
+  color: hsl(185, 6%, 25%);
+  font-weight: bolder;
+}
