@@ -52,6 +52,9 @@
   justify-content: center;
 
   position: relative;
+
+  padding-top: calc(1em + 32px + 1em);
+  box-sizing: border-box;
 }
 .game-frame {}
 .setting-enter {
