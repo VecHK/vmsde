@@ -1,6 +1,12 @@
 .language-select {
   cursor: pointer;
   user-select: none;
+
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .lang-icon:last-child {
