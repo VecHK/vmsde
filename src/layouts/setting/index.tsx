@@ -111,108 +111,113 @@ export default () => {
       </article>
 
       <form className="setting-form" onSubmit={handleSubmit(onSubmit)}>
-        <h1>{t('难度设定')}</h1>
-        <div className="diffculty-setting">
-          <div className="diff-select">
-            <label>
-              <div className="ds-title">
-                <input
-                  className="c-ratio"
-                  type="radio"
-                  {...register('diffculty')}
-                  defaultValue="EASY"
-                />
-                <span className="my-ratio"></span>
-                <span className="d-title">{t('简单')}</span>
-              </div>
-              <div className="d-desc">{t('谁都能玩的程度')}</div>
-            </label>
-            <label>
-              <div className="ds-title">
-                <input
-                  className="c-ratio"
-                  type="radio"
-                  {...register('diffculty')}
-                  defaultValue="HARD"
-                />
-                <span className="my-ratio"></span>
-                <span className="d-title">{t('困难')}</span>
-              </div>
-              <div className="d-desc">{t('需要点功夫')}</div>
-            </label>
-            <label>
-              <div className="ds-title">
-                <input
-                  className="c-ratio"
-                  type="radio"
-                  {...register('diffculty')}
-                  defaultValue="LUNATIC"
-                />
-                <span className="my-ratio"></span>
-                <span className="d-title">{t('大佬')}</span>
-              </div>
-              <div className="d-desc">
-                {t('能玩完这关才好意思说自己会玩扫雷')}
-              </div>
-            </label>
+        <div className="multi-col">
+          <div className="sf-col">
+            <h1>{t('难度设定')}</h1>
+            <div className="diffculty-setting">
+              <div className="diff-select">
+                <label>
+                  <div className="ds-title">
+                    <input
+                      className="c-ratio"
+                      type="radio"
+                      {...register('diffculty')}
+                      defaultValue="EASY"
+                    />
+                    <span className="my-ratio"></span>
+                    <span className="d-title">{t('简单')}</span>
+                  </div>
+                  <div className="d-desc">{t('谁都能玩的程度')}</div>
+                </label>
+                <label>
+                  <div className="ds-title">
+                    <input
+                      className="c-ratio"
+                      type="radio"
+                      {...register('diffculty')}
+                      defaultValue="HARD"
+                    />
+                    <span className="my-ratio"></span>
+                    <span className="d-title">{t('困难')}</span>
+                  </div>
+                  <div className="d-desc">{t('需要点功夫')}</div>
+                </label>
+                <label>
+                  <div className="ds-title">
+                    <input
+                      className="c-ratio"
+                      type="radio"
+                      {...register('diffculty')}
+                      defaultValue="LUNATIC"
+                    />
+                    <span className="my-ratio"></span>
+                    <span className="d-title">{t('大佬')}</span>
+                  </div>
+                  <div className="d-desc">
+                    {t('能玩完这关才好意思说自己会玩扫雷')}
+                  </div>
+                </label>
 
-            <label>
-              <div className="ds-title">
-                <input
-                  className="c-ratio"
-                  type="radio"
-                  {...register('diffculty')}
-                  defaultValue="CUSTOM"
-                />
-                <span className="my-ratio"></span>
-                <span className="d-title">{t('自定义')}</span>
+                <label>
+                  <div className="ds-title">
+                    <input
+                      className="c-ratio"
+                      type="radio"
+                      {...register('diffculty')}
+                      defaultValue="CUSTOM"
+                    />
+                    <span className="my-ratio"></span>
+                    <span className="d-title">{t('自定义')}</span>
+                  </div>
+                  <div className="d-desc">{t('骨灰级玩家最爱的')}</div>
+                </label>
               </div>
-              <div className="d-desc">{t('骨灰级玩家最爱的')}</div>
-            </label>
+
+              <div className="diff-custom">
+                {watch('diffculty') === 'CUSTOM' && customDiffcultyNode}
+              </div>
+            </div>
           </div>
 
-          <div className="diff-custom">
-            {watch('diffculty') === 'CUSTOM' && customDiffcultyNode}
+          <div className="sf-col">
+            <h1 className="other-setting-h1">{t('其它的一些设定')}</h1>
+            <div className="field">
+              <label>
+                <div className="ds-title">
+                  <input
+                    className="c-ratio"
+                    type="checkbox"
+                    {...register('edge_bomb')}
+                    defaultValue={1}
+                  />
+                  <span className="my-ratio"></span>
+                  <span className="d-title">{t('边缘不放置地雷')}</span>
+                </div>
+                <div
+                  className="d-desc"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'flex-start',
+                    flexDirection: 'column',
+                  }}
+                >
+                  <div>{t('可以避免这种情况')}</div>
+                  <GameMap
+                    status="WIN"
+                    vms={CreateVMSByMData({
+                      width: 5,
+                      height: 4,
+                      mData: '__!__\n__?__\n_XXX_\n_____',
+                    })}
+                    setVMS={() => {
+                      //
+                    }}
+                  />
+                </div>
+              </label>
+            </div>
           </div>
         </div>
-
-        <h1 className="other-setting-h1">{t('其它的一些设定')}</h1>
-        <div className="field">
-          <label>
-            <div className="ds-title">
-              <input
-                className="c-ratio"
-                type="checkbox"
-                {...register('edge_bomb')}
-                defaultValue={1}
-              />
-              <span className="my-ratio"></span>
-              <span className="d-title">{t('边缘不放置地雷')}</span>
-            </div>
-            <div
-              className="d-desc"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'flex-start',
-                flexDirection: 'column',
-              }}
-            >
-              <div>{t('可以避免这种情况')}</div>
-              <GameMap
-                status="WIN"
-                vms={CreateVMSByMData({
-                  width: 5,
-                  height: 4,
-                  mData: '__!__\n__?__\n_XXX_\n_____',
-                })}
-                setVMS={() => {
-                  //
-                }}
-              />
-            </div>
-          </label>
-        </div>
-
         <Button style={{ margin: '50px 0', width: '150px' }} type="submit">
           {t('保存并返回')}
         </Button>
