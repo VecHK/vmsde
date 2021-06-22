@@ -1,5 +1,5 @@
-import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import Button from 'src/components/Button'
 
 import { ConfigForm, loadConfig, form2Config, saveConfig } from 'src/config'
@@ -14,6 +14,7 @@ const MIN_HEIGHT = 10
 const MAX_HEIGHT = 99
 
 export default () => {
+  const { t } = useTranslation()
   const config = loadConfig()
 
   const {
@@ -41,7 +42,7 @@ export default () => {
   const customDiffcultyNode = (
     <div className="custom-diffculty">
       <div className="field">
-        <label>宽度</label>
+        <label>{t('宽度')}</label>
         <div>
           <input
             className="c-input"
@@ -62,7 +63,7 @@ export default () => {
       </div>
 
       <div className="field">
-        <label>高度</label>
+        <label>{t('高度')}</label>
         <div>
           <input
             className="c-input"
@@ -83,7 +84,7 @@ export default () => {
       </div>
 
       <div className="field">
-        <label>雷数</label>
+        <label>{t('雷数')}</label>
         <div>
           <input
             className="c-input"
@@ -104,13 +105,13 @@ export default () => {
   return (
     <div className="setting">
       <article className="about">
-        <h1>关于</h1>
+        <h1>{t('关于')}</h1>
         <p>Vec Minesweeper -Definitive Edition-</p>
         <p>Version: {`${process.env.REACT_APP_VERSION}`}</p>
       </article>
 
       <form className="setting-form" onSubmit={handleSubmit(onSubmit)}>
-        <h1>难度设定</h1>
+        <h1>{t('难度设定')}</h1>
         <div className="diffculty-setting">
           <div className="diff-select">
             <label>
@@ -122,9 +123,9 @@ export default () => {
                   defaultValue="EASY"
                 />
                 <span className="my-ratio"></span>
-                <span className="d-title">简单</span>
+                <span className="d-title">{t('简单')}</span>
               </div>
-              <div className="d-desc">谁都能玩的程度</div>
+              <div className="d-desc">{t('谁都能玩的程度')}</div>
             </label>
             <label>
               <div className="ds-title">
@@ -135,9 +136,9 @@ export default () => {
                   defaultValue="HARD"
                 />
                 <span className="my-ratio"></span>
-                <span className="d-title">困难</span>
+                <span className="d-title">{t('困难')}</span>
               </div>
-              <div className="d-desc">需要点功夫</div>
+              <div className="d-desc">{t('需要点功夫')}</div>
             </label>
             <label>
               <div className="ds-title">
@@ -148,9 +149,11 @@ export default () => {
                   defaultValue="LUNATIC"
                 />
                 <span className="my-ratio"></span>
-                <span className="d-title">大佬</span>
+                <span className="d-title">{t('大佬')}</span>
               </div>
-              <div className="d-desc">能玩完这关才好意思说自己会玩扫雷</div>
+              <div className="d-desc">
+                {t('能玩完这关才好意思说自己会玩扫雷')}
+              </div>
             </label>
 
             <label>
@@ -162,9 +165,9 @@ export default () => {
                   defaultValue="CUSTOM"
                 />
                 <span className="my-ratio"></span>
-                <span className="d-title">自定义</span>
+                <span className="d-title">{t('自定义')}</span>
               </div>
-              <div className="d-desc">骨灰级玩家最爱的</div>
+              <div className="d-desc">{t('骨灰级玩家最爱的')}</div>
             </label>
           </div>
 
@@ -173,7 +176,7 @@ export default () => {
           </div>
         </div>
 
-        <h1 className="other-setting-h1">其它的一些设定</h1>
+        <h1 className="other-setting-h1">{t('其它的一些设定')}</h1>
         <div className="field">
           <label>
             <div className="ds-title">
@@ -184,7 +187,7 @@ export default () => {
                 defaultValue={1}
               />
               <span className="my-ratio"></span>
-              <span className="d-title">边缘不放置地雷</span>
+              <span className="d-title">{t('边缘不放置地雷')}</span>
             </div>
             <div
               className="d-desc"
@@ -194,7 +197,7 @@ export default () => {
                 flexDirection: 'column',
               }}
             >
-              <div>可以避免这种情况：</div>
+              <div>{t('可以避免这种情况')}</div>
               <GameMap
                 status="WIN"
                 vms={CreateVMSByMData({
@@ -211,7 +214,7 @@ export default () => {
         </div>
 
         <Button style={{ margin: '50px 0', width: '150px' }} type="submit">
-          保存并返回
+          {t('保存并返回')}
         </Button>
       </form>
     </div>
