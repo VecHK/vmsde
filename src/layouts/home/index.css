@@ -56,8 +56,13 @@
 .game-frame {}
 .setting-enter {
   position: absolute;
-  left: 0;
-  top: 0;
+  left: 1em;
+  top: 1em;
+}
+.language-wrapper {
+  position: absolute;
+  right: 1em;
+  top: 1em;
 }
 
 .game-map {

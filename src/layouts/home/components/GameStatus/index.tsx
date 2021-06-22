@@ -4,6 +4,27 @@ import { VMS, VMSStatus } from 'src/vms-logic'
 import GameCell from '../GameCell'
 import './index.css'
 
+import { Trans, useTranslation } from 'react-i18next'
+
+function PlayingTips() {
+  const cellNode = useMemo(
+    () => (
+      <GameCell
+        cell={{
+          id: 9,
+          isBomb: false,
+          mark: 'NONE',
+          neighborNumber: 0,
+          isOpen: false,
+        }}
+      />
+    ),
+    []
+  )
+
+  return <Trans i18nKey="PlayingTips">点击{cellNode}就完事了</Trans>
+}
+
 export type GameStatusProps = {
   vms: VMS
   status: VMSStatus
@@ -11,6 +32,8 @@ export type GameStatusProps = {
   onClickReplay: () => void
 }
 export function GameStatus({ status, onClickReplay }: GameStatusProps) {
+  const { t } = useTranslation()
+
   const [winCount, setWinCount] = useState(0)
   const [loseCount, setLoseCount] = useState(0)
 
@@ -29,50 +52,35 @@ export function GameStatus({ status, onClickReplay }: GameStatusProps) {
           onClickReplay()
         }}
       >
-        再来一把
+        {t('再来一把')}
       </Button>
     )
-  }, [onClickReplay, status])
+  }, [onClickReplay, status, t])
 
   return (
     <div className="game-status">
       {useMemo<ReactNode>(() => {
         if (status === 'PLAYING') {
-          // setLock(true)
-          return (
-            <>
-              点击
-              <GameCell
-                cell={{
-                  id: 9,
-                  isBomb: false,
-                  mark: 'NONE',
-                  neighborNumber: 0,
-                  isOpen: false,
-                }}
-              />
-              就完事了
-            </>
-          )
+          return <PlayingTips />
         }
 
-        let labelText = '✌️你赢了'
+        let labelText = t('✌️你赢了')
 
         if (status === 'WIN') {
           if (winCount > 3) {
-            labelText = '✌️赢麻了'
+            labelText = t('✌️赢麻了')
           } else if (winCount > 2) {
-            labelText = '✌️四赢'
+            labelText = t('✌️四赢')
           } else if (winCount > 1) {
-            labelText = '✌️三赢'
+            labelText = t('✌️三赢')
           } else if (winCount > 0) {
-            labelText = '✌️双赢'
+            labelText = t('✌️双赢')
           }
         } else if (status === 'LOSE') {
-          labelText = `胜败乃兵家常事，大侠请重新来过`
+          labelText = t(`胜败乃兵家常事，大侠请重新来过`)
 
           if (loseCount > 1) {
-            labelText = '无序连败早该管管了！'
+            labelText = t(`无序连败早该管管了`)
           }
         }
 
@@ -82,7 +90,7 @@ export function GameStatus({ status, onClickReplay }: GameStatusProps) {
             {replayButton}
           </div>
         )
-      }, [loseCount, replayButton, status, winCount])}
+      }, [loseCount, replayButton, status, t, winCount])}
     </div>
   )
 }

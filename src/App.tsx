@@ -1,6 +1,8 @@
 import { ReactNode, useState } from 'react'
 import { HashRouter as Router, Redirect, useLocation } from 'react-router-dom'
 
+import './i18n'
+
 import './App.css'
 
 import LayoutToggle from './components/LayoutToggle'

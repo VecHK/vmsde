@@ -9,6 +9,7 @@ import GameMap from './components/GameMap'
 import { GameStatus } from './components/GameStatus'
 import GameTimer from './components/GameTimer'
 import Cell from 'src/components/Cell'
+import GameLanguage from './components/GameLanguage'
 import { diff2WHB, loadConfig } from 'src/config'
 
 // const WIDTH = 10
@@ -81,6 +82,9 @@ export default () => {
             location.replace('#?t=Setting')
           }}
         />
+      </div>
+      <div className="language-wrapper">
+        <GameLanguage />
       </div>
     </div>
   )
