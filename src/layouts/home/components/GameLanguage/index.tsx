@@ -14,8 +14,10 @@ export default () => {
   const [currentLangCode, setCurrentLangCode] = useState(initLangCode())
 
   const langMap: Array<[string, RegExp, string]> = [
-    ['汉', /zh/, 'zh'],
-    ['あ', /ja/, 'ja'],
+    ['汉', /(zh-hans)|(zh-cn)|(zh-sg)|(zh-my)/i, 'zh-hans'],
+    ['漢', /(zh-hant)|(zh-tw)|(zh-hk)|(zh-mo)/i, 'zh-hant'],
+    ['あ', /ja/i, 'ja'],
+    ['EN', /en/i, 'en'],
   ]
 
   const { i18n } = useTranslation()
