@@ -46,7 +46,7 @@ export function isEglePos(pos: number, width: number, height: number): boolean {
  * 因为格子有可能在最左边和最右边，这时候获取最左边/最右边计算就会越界了
  * 所以这地方需要判断
  */
-function getCanCheckPos(pos: number, width: number): number[] {
+export function getCanCheckPos(pos: number, width: number): number[] {
   if (pos < 0) {
     return []
   }
