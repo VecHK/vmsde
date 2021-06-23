@@ -3,6 +3,7 @@ import { mData2Map } from './m-data'
 import { createMap } from './map'
 import {
   Matrix,
+  updateCell,
   countMark,
   countRemainingUnOpen,
   countBomb,
@@ -11,6 +12,25 @@ import {
   getCanCheckPos,
   getNeighborPos,
 } from './matrix'
+
+test('updateCell', () => {
+  const createPlainMatrix = () => [
+    createPlainCell(0),
+    createPlainCell(0),
+    createPlainCell(0),
+    createPlainCell(0),
+  ]
+
+  const matrix: Matrix = createPlainMatrix()
+
+  expect(updateCell(matrix, 0, {})).toEqual(createPlainMatrix())
+  expect(updateCell(matrix, -1, {})).toEqual(createPlainMatrix())
+  expect(updateCell(matrix, matrix.length + 9, {})).toEqual(createPlainMatrix())
+
+  const [bombCell] = updateCell(matrix, 0, { isBomb: true })
+  expect(bombCell.isBomb).toBe(true)
+  expect(updateCell(matrix, 0, {})).toEqual(createPlainMatrix())
+})
 
 const markData = `
 _XX

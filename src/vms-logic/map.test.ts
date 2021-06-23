@@ -1,4 +1,4 @@
-import { createMap } from './map'
+import { createMap, setMark } from './map'
 
 test('createMap', () => {
   createMap({ width: 5, height: 10, bombNumber: 1, egleBomb: false })
@@ -9,4 +9,27 @@ test('createMap', () => {
   expect(() =>
     createMap({ width: 5, height: 10, bombNumber: 999999, egleBomb: false })
   ).toThrow(/bombNumber 不能超过 VMSMap 的格子数量 - 1/)
+})
+
+test('setMark', () => {
+  const map = createMap({ width: 4, height: 4, bombNumber: 3, egleBomb: false })
+  const {
+    matrix: [flagCell],
+  } = setMark(0, map)
+  expect(flagCell.mark).toBe('FLAG')
+
+  const {
+    matrix: [doubtCell],
+  } = setMark(0, { ...map, matrix: [flagCell, ...map.matrix] })
+  expect(doubtCell.mark).toBe('DOUBT')
+
+  const {
+    matrix: [noneCell],
+  } = setMark(0, { ...map, matrix: [doubtCell, ...map.matrix] })
+  expect(noneCell.mark).toBe('NONE')
+
+  const {
+    matrix: [fCell],
+  } = setMark(0, { ...map, matrix: [noneCell, ...map.matrix] })
+  expect(fCell.mark).toBe('FLAG')
 })
