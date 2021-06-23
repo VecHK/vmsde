@@ -2,6 +2,15 @@ import { Cell } from './cell'
 
 export type Matrix = Cell[]
 
+export const updateCell = (
+  matrix: Matrix,
+  updatePos: number,
+  updateValues: { [P in keyof Cell]?: Cell[P] }
+): Matrix =>
+  matrix.map((cell, p) => {
+    return p === updatePos ? { ...cell, ...updateValues } : cell
+  })
+
 export function countMark(matrix: Matrix, findMark: Cell['mark']) {
   return matrix
     .filter(({ mark }) => mark === findMark)

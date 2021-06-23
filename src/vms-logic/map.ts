@@ -1,9 +1,10 @@
-import { Cell, createPlainCell, NeighborNumber } from './cell'
+import { createPlainCell, NeighborNumber } from './cell'
 import {
   countRemainingUnOpen,
   getNeighborPos,
   isEglePos,
   Matrix,
+  updateCell,
 } from './matrix'
 
 export type MapSize = { width: number; height: number }
@@ -13,25 +14,15 @@ export type VMSMap = MapSize & {
   matrix: Matrix
 }
 
-export const updateCell = (
-  pos: number,
-  map: VMSMap,
-  updateValues: { [P in keyof Cell]?: Cell[P] }
-): VMSMap => ({
-  ...map,
-  matrix: map.matrix.map((cell, idx) => {
-    return idx === pos ? { ...cell, ...updateValues } : cell
-  }),
-})
-
 export function setMark(setPos: number, map: VMSMap): VMSMap {
   const { mark } = map.matrix[setPos]
+
   if (mark === 'FLAG') {
-    return updateCell(setPos, map, { mark: 'DOUBT' })
+    return { ...map, matrix: updateCell(map.matrix, setPos, { mark: 'DOUBT' }) }
   } else if (mark === 'DOUBT') {
-    return updateCell(setPos, map, { mark: 'NONE' })
+    return { ...map, matrix: updateCell(map.matrix, setPos, { mark: 'NONE' }) }
   } else {
-    return updateCell(setPos, map, { mark: 'FLAG' })
+    return { ...map, matrix: updateCell(map.matrix, setPos, { mark: 'FLAG' }) }
   }
 }
 
