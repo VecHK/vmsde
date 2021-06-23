@@ -24,3 +24,10 @@ export const createPlainCell = (id: number): Cell => ({
   neighborNumber: 0,
   isOpen: false,
 })
+
+type OptionalCell = { [k in keyof Cell]?: Cell[k] }
+
+export const createCell = (newData: OptionalCell = {}): Cell => ({
+  ...createPlainCell(0),
+  ...newData,
+})
