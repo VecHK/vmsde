@@ -1,9 +1,11 @@
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import Button from 'src/components/Button'
+import Cell from 'src/components/Cell'
 
 import { ConfigForm, loadConfig, form2Config, saveConfig } from 'src/config'
-import CreateVMS, { CreateVMSByMData } from 'src/vms-logic'
+import { CreateVMSByMData } from 'src/vms-logic'
 import GameMap from '../home/components/GameMap'
 
 import './index.css'
@@ -12,6 +14,43 @@ const MIN_WIDTH = 10
 const MAX_WIDTH = 99
 const MIN_HEIGHT = 10
 const MAX_HEIGHT = 99
+
+function CellLine({ str }: { str: string }) {
+  return (
+    <div className="row" style={{ justifyContent: 'flex-start' }}>
+      {str.split('').map((ch, idx) => (
+        <Cell
+          key={idx}
+          innerType="hollow"
+          innerContent={ch}
+          nColor={Math.floor(Math.random() * 10) as 0}
+        />
+      ))}
+    </div>
+  )
+}
+
+function PrintStringCell({ str }: { str: string }) {
+  const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    const handler = setInterval(() => {
+      setCount((c) => c + 1)
+    }, 1000)
+
+    return () => clearInterval(handler)
+  })
+
+  const lines = str.split('\n')
+
+  return (
+    <div className="about-logo">
+      {lines.map((line, idx) => {
+        return <CellLine key={`${count} + ${idx}`} str={line} />
+      })}
+    </div>
+  )
+}
 
 export default () => {
   const { t } = useTranslation()
@@ -106,8 +145,11 @@ export default () => {
     <div className="setting">
       <article className="about">
         <h1>{t('关于')}</h1>
-        <p>Vec Minesweeper -Definitive Edition-</p>
-        <p>Version: {`${process.env.REACT_APP_VERSION}`}</p>
+        <PrintStringCell
+          str={'Mine      \nSweeper   \nDefinitive\nEdition   '}
+        />
+        <PrintStringCell str={`          `} />
+        <PrintStringCell str={`Ver ${process.env.REACT_APP_VERSION} `} />
       </article>
 
       <form className="setting-form" onSubmit={handleSubmit(onSubmit)}>
